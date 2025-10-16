@@ -1,0 +1,138 @@
+{
+   "name": "Federated Fuzzy Regression Tree",
+   "server_module": "fedxai_lib.algorithms.federated_frt.server",
+   "client_module": "fedxai_lib.algorithms.federated_frt.client",
+   "parameters": {
+      "gain_threshold": 0.0001,
+      "max_number_rounds": 100,
+      "num_fuzzy_sets": 5,
+      "max_depth": null,
+      "min_samples_split_ratio": 0.1,
+      "min_num_clients": 20,
+      "obfuscate": true,
+      "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
+      "target": "Mean_temperature",
+      "dataset_X_train": "/dataset/X_train.csv",
+      "dataset_y_train": "/dataset/y_train.csv",
+      "dataset_X_test": "/dataset/X_test.csv",
+      "dataset_y_test": "/dataset/y_test.csv",
+      "model_output_file": "/models/frt_weather_izimir.pickle"
+   },
+   "stages": [
+       {
+          "name": "Initialization of parties",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "init"
+             }
+          ]
+       },
+       {
+          "name": "Initializing tree",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#available_clients",
+                "method": "get_stats_for_root_node"
+             },
+             {
+                "entity": "#server",
+                "method": "init_frt"
+             }
+          ]
+       },
+       {
+          "name": "Grow tree",
+          "type": "run_many",
+          "stop_condition": "stop_tree_growing",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "get_current_level_stats"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "compute_stats"
+             },
+             {
+                "entity": "#server",
+                "method": "grow_tree"
+             }
+          ]
+       },
+       {
+          "name": "Initialize tree model",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "build_model"
+             }
+          ]
+       },
+      {
+          "name": "Computing consequents",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "get_antecedents_nodes_form"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "compute_matrices_for_consequents"
+             },
+             {
+                "entity": "#server",
+                "method": "compute_consequents"
+             }
+          ]
+       },
+      {
+          "name": "Computing rules' weights",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "get_consequents"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "compute_rule_weights_step1"
+             },
+             {
+                "entity": "#server",
+                "method": "compute_rule_error_stats"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "compute_weight_rules_step2"
+             },
+             {
+                "entity": "#server",
+                "method": "compute_rule_weights"
+             }
+          ]
+       },
+       {
+          "name": "Save tree model",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "save_model"
+             },
+            {
+                "entity": "#available_clients",
+                "method": "save_model"
+             }
+          ]
+       }
+   ]
+}

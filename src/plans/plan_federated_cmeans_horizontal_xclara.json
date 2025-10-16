@@ -1,0 +1,95 @@
+{
+   "name": "Federated c-means algorithm for horizontally data partitioning",
+   "server_module": "fedxai_lib.algorithms.federated_cmeans_horizontal.server",
+   "client_module": "fedxai_lib.algorithms.federated_cmeans_horizontal.client",
+   "min_num_clients": 1,
+   "parameters": {
+      "num_clusters": 3,
+      "centroid_seed": 0,
+      "epsilon": 0.005,
+      "max_number_rounds": 100,
+      "min_num_clients": 1,
+      "dataset": "/datasets/xclara.csv"
+   },
+   "stages": [
+       {
+          "name": "Initialization of parties",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "fetch_stats"
+             },
+             {
+                "entity": "#server",
+                "method": "register_clients"
+             }
+          ]
+       },
+       {
+          "name": "Initialization of centroids",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "select_one_client",
+                "output": "#selected_clients"
+             },
+             {
+                "entity": "#selected_clients",
+                "method": "init_centers"
+             },
+             {
+                "entity": "#server",
+                "method": "init_centers"
+             }
+          ]
+       },
+       {
+          "name": "Run federation",
+          "type": "run_many",
+          "stop_condition": "stop_federation",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "sample_clients",
+                "output": "#selected_clients"
+             },
+             {
+                "entity": "#server",
+                "method": "get_centers"
+             },
+             {
+                "entity": "#selected_clients",
+                "method": "evaluate_cluster_assignment"
+             },
+             {
+                "entity": "#server",
+                "method": "process_clustering_results"
+             }
+          ]
+       },
+       {
+          "name": "Save results",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "save_model"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "save_model"
+             }
+          ]
+       }
+   ]
+}

@@ -1,0 +1,31 @@
+FROM jcorcuera/fedlang:latest
+
+LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
+
+ENV PATH="/root/.local/bin:${PATH}"
+
+WORKDIR /app
+COPY src .
+COPY pyproject.toml .
+COPY poetry.lock .
+
+# 2. Install poetry
+RUN pip install --break-system-packages pipx
+
+RUN pipx install poetry && poetry lock
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /app/fedlangpy
+
+
+# Create a non-root user for security
+# RUN addgroup --system appgroup \
+#   && adduser --system --ingroup appgroup --home /app --shell /bin/false appuser
+
+# Switch to non-root user
+# USER appuser
+
+WORKDIR /app
+
+CMD ["bin/fedlang", "foreground"]

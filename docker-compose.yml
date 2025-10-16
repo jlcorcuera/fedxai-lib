@@ -1,0 +1,115 @@
+services:
+  director:
+    image: fedxai
+    container_name: director
+    environment:
+      - FEDLANG_NODE_TYPE=director
+      - FEDLANG_NODE_NAME=director@172.20.0.2
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+    volumes:
+      - /models:/models
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.2
+
+  client1:
+    image: fedxai
+    container_name: client1
+    depends_on:
+      - director
+    environment:
+      - FEDLANG_NODE_TYPE=client
+      - FEDLANG_NODE_NAME=client1@172.20.0.3
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+      - FEDLANG_DIRECTOR_NAME=director@172.20.0.2
+    volumes:
+      - ./datasets_splits/WeatherIzimir/client_X_train_1.csv:/dataset/X_train.csv
+      - ./datasets_splits/WeatherIzimir/client_y_train_1.csv:/dataset/y_train.csv
+      - ./datasets_splits/WeatherIzimir/client_X_test_1.csv:/dataset/X_test.csv
+      - ./datasets_splits/WeatherIzimir/client_y_test_1.csv:/dataset/y_test.csv
+      - /models:/models
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.3
+
+  client2:
+    image: fedxai
+    container_name: client2
+    depends_on:
+      - director
+    environment:
+      - FEDLANG_NODE_TYPE=client
+      - FEDLANG_NODE_NAME=client2@172.20.0.4
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+      - FEDLANG_DIRECTOR_NAME=director@172.20.0.2
+    volumes:
+      - ./datasets_splits/WeatherIzimir/client_X_train_2.csv:/dataset/X_train.csv
+      - ./datasets_splits/WeatherIzimir/client_y_train_2.csv:/dataset/y_train.csv
+      - ./datasets_splits/WeatherIzimir/client_X_test_2.csv:/dataset/X_test.csv
+      - ./datasets_splits/WeatherIzimir/client_y_test_2.csv:/dataset/y_test.csv
+      - /models:/models
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.4
+
+  client3:
+    image: fedxai
+    container_name: client3
+    depends_on:
+      - director
+    environment:
+      - FEDLANG_NODE_TYPE=client
+      - FEDLANG_NODE_NAME=client2@172.20.0.5
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+      - FEDLANG_DIRECTOR_NAME=director@172.20.0.2
+    volumes:
+      - ./datasets_splits/WeatherIzimir/client_X_train_3.csv:/dataset/X_train.csv
+      - ./datasets_splits/WeatherIzimir/client_y_train_3.csv:/dataset/y_train.csv
+      - ./datasets_splits/WeatherIzimir/client_X_test_3.csv:/dataset/X_test.csv
+      - ./datasets_splits/WeatherIzimir/client_y_test_3.csv:/dataset/y_test.csv
+      - /models:/models
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.5
+
+  client4:
+    image: fedxai
+    container_name: client4
+    depends_on:
+      - director
+    environment:
+      - FEDLANG_NODE_TYPE=client
+      - FEDLANG_NODE_NAME=client2@172.20.0.6
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+      - FEDLANG_DIRECTOR_NAME=director@172.20.0.2
+    volumes:
+      - ./datasets_splits/WeatherIzimir/client_X_train_4.csv:/dataset/X_train.csv
+      - ./datasets_splits/WeatherIzimir/client_y_train_4.csv:/dataset/y_train.csv
+      - ./datasets_splits/WeatherIzimir/client_X_test_4.csv:/dataset/X_test.csv
+      - ./datasets_splits/WeatherIzimir/client_y_test_4.csv:/dataset/y_test.csv
+      - /models:/models
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.6
+
+  requester:
+    image: fedlang-requester
+    container_name: requester
+    depends_on:
+      - director
+    environment:
+      ERL_FLAGS: -setcookie 050df51e-1c75-433e-95c3-8e3e1926d6a6 -name test@172.20.0.254
+      FEDLANG_DIRECTOR_NAME: director@172.20.0.2
+    volumes:
+      - /models:/models
+    command: tail -f /dev/null
+    networks:
+      my_custom_net:
+        ipv4_address: 172.20.0.254
+
+networks:
+  my_custom_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
