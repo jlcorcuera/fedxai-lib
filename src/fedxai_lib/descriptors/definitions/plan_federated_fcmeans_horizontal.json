@@ -1,17 +1,7 @@
 {
    "name": "Federated Fuzzy c-means algorithm for horizontally data partitioning",
-   "server_module": "fedxai_lib.algorithms.federated_fcmeans_horizontal.server",
-   "client_module": "fedxai_lib.algorithms.federated_fcmeans_horizontal.client",
-   "min_num_clients": 1,
-   "parameters": {
-      "num_clusters": 3,
-      "centroid_seed": 0,
-      "epsilon": 0.005,
-      "lambda_factor": 2,
-      "max_number_rounds": 100,
-      "min_num_clients": 1,
-      "dataset": "/datasets/xclara.csv"
-   },
+   "server_class": "fedxai_lib.algorithms.federated_fcmeans_horizontal.server.FederatedHorizontalFCMServer",
+   "client_class": "fedxai_lib.algorithms.federated_fcmeans_horizontal.client.FederatedHorizontalFCMClient",
    "stages": [
        {
           "name": "Initialization of parties",

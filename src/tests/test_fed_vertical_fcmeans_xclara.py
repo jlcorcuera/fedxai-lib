@@ -6,12 +6,13 @@
   @Time:        7/4/25 12:08 PM
 """
 import os
-import numpy as np
 import pandas as pd
 from fedxai_lib.algorithms.federated_fcmeans_vertical.client import FederatedVerticalFCMClient
 from fedxai_lib.algorithms.federated_fcmeans_vertical.server import FederatedVerticalFCMServer
 from fedlangpy.core.utils import load_plan, run_experiment
 from sklearn.preprocessing import MinMaxScaler
+
+from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 num_clients = 2
 features_per_client = [1, 1]
@@ -43,12 +44,19 @@ for i in range(num_clients):
     dataset_chunks.append(X[:, cstart_index:clast_index])
     last_index = clast_index
 
+parameters = {
+    "num_clusters": 3,
+    "centroid_seed": 0,
+    "epsilon": 0.005,
+    "lambda_factor": 2,
+    "max_number_rounds": 100,
+    "min_num_clients": 1,
+    "dataset": "/datasets/xclara.csv"
+}
 
-plan_path = './plans/plan_federated_fcmeans_vertical_xclara.json'
-
-fl_plan = load_plan(plan_path, server_class=FederatedVerticalFCMServer, client_class=FederatedVerticalFCMClient)
+fl_plan = load_fedxai_plan(PlanEnum.FED_FCMEANS_VERTICAL)
 
 clients = [FederatedVerticalFCMClient(type='client', id = idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedVerticalFCMServer(type='server')
 
-run_experiment(fl_plan, server, clients)
+run_experiment(fl_plan, server, clients, parameters)

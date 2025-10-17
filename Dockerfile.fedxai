@@ -2,7 +2,10 @@ FROM jcorcuera/fedlang:latest
 
 LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
 
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH="/root/.local/bin:$HOME/.local/bin:$PATH" POETRY_NO_INTERACTION=1
+
+WORKDIR /plans
+COPY src/fedxai_lib/descriptors/definitions .
 
 WORKDIR /app
 COPY src .
@@ -10,21 +13,11 @@ COPY pyproject.toml .
 COPY poetry.lock .
 
 # 2. Install poetry
-RUN pip install --break-system-packages pipx
+RUN pip install --break-system-packages pipx && pipx install poetry
 
-RUN pipx install poetry && poetry lock
-RUN poetry export -f requirements.txt --output requirements.txt
-RUN pip install -r requirements.txt
-
-WORKDIR /app/fedlangpy
-
-
-# Create a non-root user for security
-# RUN addgroup --system appgroup \
-#   && adduser --system --ingroup appgroup --home /app --shell /bin/false appuser
-
-# Switch to non-root user
-# USER appuser
+RUN poetry self add poetry-plugin-export@1.9.0
+RUN poetry export -vvv -f requirements.txt --without-hashes -o requirements.txt
+RUN pip install --break-system-packages -r requirements.txt
 
 WORKDIR /app
 

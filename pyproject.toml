@@ -15,13 +15,13 @@ license = "Apache-2.0"
 license-files = ["LICEN[CS]E*"]
 
 [tool.poetry]
-packages = [{include = "fedxai_lib", from="src"}, {include = "plans", from="src"}]
+packages = [{include = "fedxai_lib", from="src"}]
 
 [tool.poetry.dependencies]
 pandas = "^2.3.3"
 numpy = "^2.3.4"
 numba = "^0.62.1"
-fedlang-py = { version = "0.0.2", source = "testpypi" }
+fedlang-py = { version = "0.0.7", source = "testpypi" }
 scikit-learn = "^1.7.2"
 simpful = "^2.12.0"
 
@@ -31,7 +31,7 @@ poetry-plugin-export = "==1.9.0"
 [[tool.poetry.source]]
 name = "testpypi"
 url = "https://test.pypi.org/simple/"
-priority = "explicit"
+priority = "supplemental"
 
 [project.urls]
 Homepage = "https://github.com/jlcorcuera/fedxai-lib"

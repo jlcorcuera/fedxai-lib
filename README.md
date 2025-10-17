@@ -34,8 +34,8 @@ fedxai_lib/
 ├── algorithms/                        # Federated algorithm implementations
 │   ├── federated_fc_means_horizontal  # Fuzzy C-Means (Horizontal)
 │   ├── federated_frt                  # Fuzzy Regression Tree (FRT)
-├── plans/                             # JSON-based Federation Plans
-├── tests/                             # Unit tests and local federation simulations
+│   ├── ...
+tests/                             # Unit tests and local federation simulations
 │   ├── test_fed_fcmeans_xclara.py
 │   └── test_fed_frt_weather_izimir.py
 ├── pyproject.toml
@@ -54,15 +54,32 @@ You can execute federated algorithms locally for testing and debugging.
 ```python
 from fedlangpy.algorithms.federated_cmeans_vertical.client import FederatedVerticalCMClient
 from fedlangpy.algorithms.federated_cmeans_vertical.server import FederatedVerticalCMServer
-from fedlangpy.core.utils import load_plan, run_experiment
+from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
+from fedlangpy.core.utils import run_experiment
 
-plan_path = './plans/plan_federated_cmeans_vertical_xclara.json'
-fl_plan = load_plan(plan_path, server_class=FederatedVerticalCMServer, client_class=FederatedVerticalCMClient)
+parameters = {
+    "gain_threshold": 0.0001,
+    "max_number_rounds": 100,
+    "num_fuzzy_sets": 5,
+    "max_depth": None,
+    "min_samples_split_ratio": 0.1,
+    "min_num_clients": 20,
+    "obfuscate": True,
+    "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
+    "target": "Mean_temperature",
+    "dataset_X_train": "/dataset/X_train.csv",
+    "dataset_y_train": "/dataset/y_train.csv",
+    "dataset_X_test": "/dataset/X_test.csv",
+    "dataset_y_test": "/dataset/y_test.csv",
+    "model_output_file": "/models/frt_weather_izimir.pickle"
+}
+
+fl_plan = load_fedxai_plan(PlanEnum.FED_FRT_HORIZONTAL)
 
 clients = [FederatedVerticalCMClient(type='client', id=idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedVerticalCMServer(type='server')
 
-run_experiment(fl_plan, server, clients)
+run_experiment(fl_plan, server, clients, parameters)
 ```
 
 ### Environment Setup
@@ -137,7 +154,31 @@ Run the federation by sending a plan execution request to the Director:
 
 ```bash
 $ cd scripts
-$ ./run_federation.sh ../plans/plan_federated_frt_weather_izimir.json
+$ ./run_federation.sh ../executions/federated_frt_weather_izimir.json
+```
+
+where the content of federated_frt_weather_izimir.json is:
+
+```json
+{
+    "algorithm": "federated_frt",
+    "parameters": {
+      "gain_threshold": 0.0001,
+      "max_number_rounds": 100,
+      "num_fuzzy_sets": 5,
+      "max_depth": null,
+      "min_samples_split_ratio": 0.1,
+      "min_num_clients": 20,
+      "obfuscate": true,
+      "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
+      "target": "Mean_temperature",
+      "dataset_X_train": "/dataset/X_train.csv",
+      "dataset_y_train": "/dataset/y_train.csv",
+      "dataset_X_test": "/dataset/X_test.csv",
+      "dataset_y_test": "/dataset/y_test.csv",
+      "model_output_file": "/models/frt_weather_izimir.pickle"
+  }
+}
 ```
 
 ---

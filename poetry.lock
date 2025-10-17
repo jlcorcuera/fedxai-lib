@@ -2,14 +2,14 @@
 
 [[package]]
 name = "fedlang-py"
-version = "0.0.2"
+version = "0.0.7"
 description = "A Federated Learning Framework for Erlang-Python Integration"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "fedlang_py-0.0.2-py3-none-any.whl", hash = "sha256:fecedb11e4fbc0305fd31dbb4ad097c4bac42ff62137dbfdfc44dadaa87767ee"},
-    {file = "fedlang_py-0.0.2.tar.gz", hash = "sha256:05ab784dad73381ccbbc71492f5a8fe92f0b2e2e7856bc0b05319eeb94639aee"},
+    {file = "fedlang_py-0.0.7-py3-none-any.whl", hash = "sha256:bed78e69dbda7ab67369fe91922d1f91c60bf7b96894cd60b86cee35282a80ae"},
+    {file = "fedlang_py-0.0.7.tar.gz", hash = "sha256:8ab73432c03ce5ae3e7779c207f43d302f289055a7b98891c8aafe1e2e0cd36d"},
 ]
 
 [package.source]
@@ -498,4 +498,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "14ea2c692fd56a888cbe9b359d3185456f289f731deb81f41b071b8f0b0f1c03"
+content-hash = "a7e0ae9b1c79aeacff95b58a4acc9e4037f3223ebac6272dbe01164bacad25ed"

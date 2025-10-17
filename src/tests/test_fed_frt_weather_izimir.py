@@ -7,13 +7,13 @@
 """
 import os
 import pandas as pd
-
 from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
 from fedxai_lib.algorithms.federated_frt.server import FedFRTServer
 from fedxai_lib.algorithms.federated_frt.utils.robust_scaler import RobustScaler
-from fedlangpy.core.utils import load_plan, run_experiment
+from fedlangpy.core.utils import run_experiment
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
+from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 random_state = 19
 num_clients = 5
@@ -88,17 +88,30 @@ for fold_id, (train_index, test_index) in enumerate(kf.split(X)):
 
     break
 
+parameters = {
+      "gain_threshold": 0.0001,
+      "max_number_rounds": 100,
+      "num_fuzzy_sets": 5,
+      "max_depth": None,
+      "min_samples_split_ratio": 0.1,
+      "min_num_clients": 20,
+      "obfuscate": True,
+      "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
+      "target": "Mean_temperature",
+      "dataset_X_train": "/dataset/X_train.csv",
+      "dataset_y_train": "/dataset/y_train.csv",
+      "dataset_X_test": "/dataset/X_test.csv",
+      "dataset_y_test": "/dataset/y_test.csv",
+      "model_output_file": "/models/frt_weather_izimir.pickle"
+}
 
-plan_path = './plans/plan_federated_frt_weather_izimir.json'
-
-fl_plan = load_plan(plan_path, server_class=FedFRTServer, client_class=FedFRTClient)
+fl_plan = load_fedxai_plan(PlanEnum.FED_FRT_HORIZONTAL)
 
 clients = [FedFRTClient(type='client', id = idx, scaler_X=scaler_x, scaler_y=scaler_y,
                         X_train=dataset_by_client.get(idx)['X_train'],
                         y_train=dataset_by_client.get(idx)['y_train'],
                         X_test=dataset_by_client.get(idx)['X_test'],
                         y_test=dataset_by_client.get(idx)['y_test']) for idx in range(num_clients)]
-
 server = FedFRTServer(type='server')
 
-run_experiment(fl_plan, server, clients)
+run_experiment(fl_plan, server, clients, parameters)

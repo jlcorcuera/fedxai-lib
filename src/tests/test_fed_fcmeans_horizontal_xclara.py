@@ -13,7 +13,7 @@ from fedlangpy.core.utils import load_plan, run_experiment
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler
 
-
+from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 num_clients = 20
 iid_seed: int = 2
@@ -46,12 +46,19 @@ for idx_split, (train_index, test_index) in enumerate(skf.split(X, Y), 1):
     df_split = pd.DataFrame(data=X[test_index], columns=features)
     df_split.to_csv(os.path.join(split_folder, f'client_horizontal_{idx_split}.csv'), index=False)
 
+parameters = {
+    "num_clusters": 3,
+    "centroid_seed": 0,
+    "epsilon": 0.005,
+    "lambda_factor": 2,
+    "max_number_rounds": 100,
+    "min_num_clients": 1,
+    "dataset": "/datasets/xclara.csv"
+}
 
-plan_path = './plans/plan_federated_fcmeans_horizontal_xclara.json'
-
-fl_plan = load_plan(plan_path, server_class=FederatedHorizontalFCMServer, client_class=FederatedHorizontalFCMClient)
+fl_plan = load_fedxai_plan(PlanEnum.FED_FCMEANS_HORIZONTAL)
 
 clients = [FederatedHorizontalFCMClient(type='client', id = idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedHorizontalFCMServer(type='server')
 
-run_experiment(fl_plan, server, clients)
+run_experiment(fl_plan, server, clients, parameters)
