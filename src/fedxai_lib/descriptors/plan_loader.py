@@ -1,4 +1,5 @@
-import os
+import tempfile
+from importlib.resources import files
 from enum import Enum
 from fedlangpy.core.models import FLPlan
 from fedlangpy.core.utils import load_plan
@@ -13,6 +14,14 @@ class PlanEnum(Enum):
 
 
 def load_fedxai_plan(plan_enum: PlanEnum) -> FLPlan:
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    plan_location = os.path.join(current_dir, "definitions", plan_enum.value)
-    return load_plan(plan_location)
+    json_content = files("fedxai_lib.descriptors.definitions").joinpath(plan_enum.value).read_text()
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+        tmp.write(json_content)
+        tmp_path = tmp.name
+
+    try:
+        return load_plan(tmp_path)
+    finally:
+        import os
+        os.unlink(tmp_path)
