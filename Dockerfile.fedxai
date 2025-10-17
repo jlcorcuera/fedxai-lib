@@ -1,3 +1,7 @@
+# ---
+# Builder stage: compile and package the Erlang application
+# To build the image: docker build --progress=plain -f Dockerfile.fedxai -t fedxai .
+# ---
 FROM jcorcuera/fedlang:latest
 
 LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
@@ -12,9 +16,7 @@ COPY src .
 COPY pyproject.toml .
 COPY poetry.lock .
 
-# 2. Install poetry
 RUN pip install --break-system-packages pipx && pipx install poetry
-
 RUN poetry self add poetry-plugin-export@1.9.0
 RUN poetry export -vvv -f requirements.txt --without-hashes -o requirements.txt
 RUN pip install --break-system-packages -r requirements.txt

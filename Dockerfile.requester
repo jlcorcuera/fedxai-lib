@@ -1,11 +1,13 @@
+# ---
+# Builder stage: compile and package the Erlang application
+# To build the image: docker build --progress=plain -f Dockerfile.requester -t fedlang-requester .
+# ---
 FROM erlang:27.3.4
 
 LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
 
-WORKDIR /app
-COPY fedlangpy .
-
 WORKDIR /app/scripts
+COPY src/scripts .
 RUN erlc /app/scripts/run_federation.erl && chmod +x /app/scripts/*.sh
 
 WORKDIR /app
