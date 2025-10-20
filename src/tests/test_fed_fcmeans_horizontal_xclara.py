@@ -7,13 +7,11 @@
 """
 import os
 import pandas as pd
+from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
 from fedxai_lib.algorithms.federated_fcmeans_horizontal.server import FederatedHorizontalFCMServer
 from fedxai_lib.algorithms.federated_fcmeans_horizontal.client import FederatedHorizontalFCMClient
-from fedlangpy.core.utils import load_plan, run_experiment
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler
-
-from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 num_clients = 20
 iid_seed: int = 2
@@ -56,9 +54,7 @@ parameters = {
     "dataset": "/datasets/xclara.csv"
 }
 
-fl_plan = load_fedxai_plan(PlanEnum.FED_FCMEANS_HORIZONTAL)
-
 clients = [FederatedHorizontalFCMClient(type='client', id = idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedHorizontalFCMServer(type='server')
 
-run_experiment(fl_plan, server, clients, parameters)
+run_fedxai_experiment(FedXAIAlgorithm.FED_FCMEANS_HORIZONTAL, server, clients, parameters)

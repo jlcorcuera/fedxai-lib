@@ -7,13 +7,12 @@
 """
 import os
 import pandas as pd
+from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm
 from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
 from fedxai_lib.algorithms.federated_frt.server import FedFRTServer
 from fedxai_lib.algorithms.federated_frt.utils.robust_scaler import RobustScaler
-from fedlangpy.core.utils import run_experiment
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
-from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 random_state = 19
 num_clients = 5
@@ -105,8 +104,6 @@ parameters = {
       "model_output_file": "/models/frt_weather_izimir.pickle"
 }
 
-fl_plan = load_fedxai_plan(PlanEnum.FED_FRT_HORIZONTAL)
-
 clients = [FedFRTClient(type='client', id = idx, scaler_X=scaler_x, scaler_y=scaler_y,
                         X_train=dataset_by_client.get(idx)['X_train'],
                         y_train=dataset_by_client.get(idx)['y_train'],
@@ -114,4 +111,4 @@ clients = [FedFRTClient(type='client', id = idx, scaler_X=scaler_x, scaler_y=sca
                         y_test=dataset_by_client.get(idx)['y_test']) for idx in range(num_clients)]
 server = FedFRTServer(type='server')
 
-run_experiment(fl_plan, server, clients, parameters)
+run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, parameters)

@@ -7,12 +7,10 @@
 """
 import os
 import pandas as pd
+from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
 from fedxai_lib.algorithms.federated_fcmeans_vertical.client import FederatedVerticalFCMClient
 from fedxai_lib.algorithms.federated_fcmeans_vertical.server import FederatedVerticalFCMServer
-from fedlangpy.core.utils import load_plan, run_experiment
 from sklearn.preprocessing import MinMaxScaler
-
-from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
 
 num_clients = 2
 features_per_client = [1, 1]
@@ -54,9 +52,8 @@ parameters = {
     "dataset": "/datasets/xclara.csv"
 }
 
-fl_plan = load_fedxai_plan(PlanEnum.FED_FCMEANS_VERTICAL)
 
 clients = [FederatedVerticalFCMClient(type='client', id = idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedVerticalFCMServer(type='server')
 
-run_experiment(fl_plan, server, clients, parameters)
+run_fedxai_experiment(FedXAIAlgorithm.FED_FCMEANS_VERTICAL, server, clients, parameters)

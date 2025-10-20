@@ -1,0 +1,24 @@
+services:
+  director:
+    image: jcorcuera/fedxai_lib
+    container_name: director
+    environment:
+      - FEDLANG_NODE_TYPE=director
+      - FEDLANG_NODE_NAME=director@172.16.2.185
+      - FEDLANG_COOKIE=050df51e-1c75-433e-95c3-8e3e1926d6a6
+      - ERL_FLAGS=-kernel inet_dist_listen_min 9000 inet_dist_listen_max 9000 net_ticktime 60
+    ports:
+      - "4369:4369"
+      - "9000:9000"
+    volumes:
+      - /models:/models
+    networks:
+      fedlang_net:
+        ipv4_address: 172.20.0.2
+
+networks:
+  fedlang_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

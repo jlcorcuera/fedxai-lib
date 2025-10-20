@@ -54,8 +54,7 @@ You can execute federated algorithms locally for testing and debugging.
 ```python
 from fedlangpy.algorithms.federated_cmeans_vertical.client import FederatedVerticalCMClient
 from fedlangpy.algorithms.federated_cmeans_vertical.server import FederatedVerticalCMServer
-from fedxai_lib.descriptors.plan_loader import load_fedxai_plan, PlanEnum
-from fedlangpy.core.utils import run_experiment
+from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm
 
 parameters = {
     "gain_threshold": 0.0001,
@@ -74,12 +73,12 @@ parameters = {
     "model_output_file": "/models/frt_weather_izimir.pickle"
 }
 
-fl_plan = load_fedxai_plan(PlanEnum.FED_FRT_HORIZONTAL)
+
 
 clients = [FederatedVerticalCMClient(type='client', id=idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
 server = FederatedVerticalCMServer(type='server')
 
-run_experiment(fl_plan, server, clients, parameters)
+run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, parameters)
 ```
 
 ### Environment Setup
