@@ -52,31 +52,34 @@ You can execute federated algorithms locally for testing and debugging.
 **Example:**
 
 ```python
-from fedlangpy.algorithms.federated_cmeans_vertical.client import FederatedVerticalCMClient
-from fedlangpy.algorithms.federated_cmeans_vertical.server import FederatedVerticalCMServer
 from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm
+from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
+from fedxai_lib.algorithms.federated_frt.server import FedFRTServer
 
 parameters = {
-    "gain_threshold": 0.0001,
-    "max_number_rounds": 100,
-    "num_fuzzy_sets": 5,
-    "max_depth": None,
-    "min_samples_split_ratio": 0.1,
-    "min_num_clients": 20,
-    "obfuscate": True,
-    "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
-    "target": "Mean_temperature",
-    "dataset_X_train": "/dataset/X_train.csv",
-    "dataset_y_train": "/dataset/y_train.csv",
-    "dataset_X_test": "/dataset/X_test.csv",
-    "dataset_y_test": "/dataset/y_test.csv",
-    "model_output_file": "/models/frt_weather_izimir.pickle"
+      "gain_threshold": 0.0001,
+      "max_number_rounds": 100,
+      "num_fuzzy_sets": 5,
+      "max_depth": None,
+      "min_samples_split_ratio": 0.1,
+      "min_num_clients": 20,
+      "obfuscate": True,
+      "features_names": ["Max_temperature","Min_temperature","Dewpoint","Precipitation","Sea_level_pressure","Standard_pressure","Visibility","Wind_speed","Max_wind_speed"],
+      "target": "Mean_temperature",
+      "dataset_X_train": "/dataset/X_train.csv",
+      "dataset_y_train": "/dataset/y_train.csv",
+      "dataset_X_test": "/dataset/X_test.csv",
+      "dataset_y_test": "/dataset/y_test.csv",
+      "model_output_file": "/models/frt_weather_izimir.pickle"
 }
 
+clients = [FedFRTClient(type='client', id = idx, scaler_X=scaler_x, scaler_y=scaler_y,
+                        X_train=dataset_by_client.get(idx)['X_train'],
+                        y_train=dataset_by_client.get(idx)['y_train'],
+                        X_test=dataset_by_client.get(idx)['X_test'],
+                        y_test=dataset_by_client.get(idx)['y_test']) for idx in range(num_clients)]
 
-
-clients = [FederatedVerticalCMClient(type='client', id=idx, dataset=dataset_chunks[idx]) for idx in range(num_clients)]
-server = FederatedVerticalCMServer(type='server')
+server = FedFRTServer(type='server')
 
 run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, parameters)
 ```
