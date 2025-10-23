@@ -156,7 +156,7 @@ Run the federation by sending a plan execution request to the Director:
 
 ```bash
 $ cd scripts
-$ ./run_federation.sh ../executions/federated_frt_weather_izimir.json
+$ ./run_federation.sh ./executions/federated_frt_weather_izimir.json
 ```
 
 where the content of federated_frt_weather_izimir.json is:
