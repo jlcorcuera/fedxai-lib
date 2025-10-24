@@ -1,6 +1,6 @@
 services:
   director:
-    image: jcorcuera/fedxai_frbc
+    image: jcorcuera/fedxai_lib:0.0.4
     container_name: director
     environment:
       - FEDLANG_NODE_TYPE=director

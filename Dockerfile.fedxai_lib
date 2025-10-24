@@ -1,8 +1,8 @@
 # ---
 # Builder stage: compile and package the Erlang application
-# To build the image: docker build --progress=plain -f Dockerfile.fedxai_lib -t jcorcuera/fedxai_lib .
+# To build the image: docker build --progress=plain -f Dockerfile.fedxai_lib -t jcorcuera/fedxai_lib:0.0.4 .
 # ---
-FROM jcorcuera/fedlang:latest
+FROM jcorcuera/fedlang:1.0.0
 
 LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
 
@@ -12,6 +12,6 @@ WORKDIR /plans
 COPY src/fedxai_lib/descriptors/definitions .
 
 WORKDIR /app
-RUN pip install fedxai-lib==0.0.3 --extra-index-url https://test.pypi.org/simple/
+RUN pip install fedxai-lib==0.0.4 --extra-index-url https://test.pypi.org/simple/
 
 CMD ["bin/fedlang", "foreground"]
