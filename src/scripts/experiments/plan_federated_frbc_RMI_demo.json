@@ -9,7 +9,7 @@
       "target": "class",
       "dataset_X_train" : "/dataset/X_train.csv",
       "output_model_folder": "/tmp",
-      "model_output_file": "./models/frbc_RMI.pickle",
+      "model_output_file": "/models/frbc_RMI.pickle",
       "desired_columns" : [
         "original_shape2D_Elongation",
         "original_shape2D_MajorAxisLength",
