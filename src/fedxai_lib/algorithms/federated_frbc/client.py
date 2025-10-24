@@ -52,8 +52,8 @@ class FederatedFRBCClient(FedlangEntity):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        # self.X_train = kwargs.get("X_train")
-        # self.y_train = kwargs.get("y_train")
+        self.X_train = kwargs.get("X_train")
+        self.y_train = kwargs.get("y_train")
         # self.X_test = kwargs.get("X_test")
         # self.y_test = kwargs.get("y_test")
 
