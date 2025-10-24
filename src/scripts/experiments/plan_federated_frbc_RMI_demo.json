@@ -1,0 +1,30 @@
+{
+   "algorithm": "federated_frbc",
+   "parameters": {
+      "max_number_rounds": 1,
+      "num_fuzzy_sets": 5,
+      "min_num_clients": 3,
+      "num_features": 14,
+      "obfuscate": true,
+      "target": "class",
+      "dataset_X_train" : "/dataset/X_train.csv",
+      "output_model_folder": "/tmp",
+      "model_output_file": "./models/frbc_RMI.pickle",
+      "desired_columns" : [
+        "original_shape2D_Elongation",
+        "original_shape2D_MajorAxisLength",
+        "original_shape2D_MinorAxisLength",
+        "original_shape2D_Perimeter",
+        "original_shape2D_MaximumDiameter",
+        "original_shape2D_Sphericity",
+        "original_firstorder_Mean",
+        "original_firstorder_Median",
+        "original_firstorder_Minimum",
+        "original_firstorder_Maximum",
+        "original_firstorder_Range",
+        "original_firstorder_Uniformity",
+        "Centroid_X",
+        "Centroid_Y"
+         ]
+   }
+}

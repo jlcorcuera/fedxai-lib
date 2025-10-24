@@ -6,7 +6,9 @@
   @Time:        7/4/25 11:45 AM
 """
 from enum import Enum
+
 from fedlangpy.core.utils import run_experiment
+
 from fedxai_lib.descriptors.plan_loader import load_fedxai_plan
 
 
@@ -20,8 +22,11 @@ class FedXAIAlgorithm(Enum):
     FED_CMEANS_HORIZONTAL = (3, "plan_federated_fcmeans_horizontal.json")
     FED_CMEANS_VERTICAL = (4, "plan_federated_fcmeans_vertical.json")
     FED_FRT_HORIZONTAL = (5, "plan_federated_frt.json")
+    FED_FRBC_HORIZONTAL = (6, "plan_federated_frbc.json")
 
 
 def run_fedxai_experiment(algorithm: FedXAIAlgorithm, server, clients, parameters):
+    fl_plan = load_fedxai_plan(algorithm.json_descriptor)
+    run_experiment(fl_plan, server, clients, parameters)
     fl_plan = load_fedxai_plan(algorithm.json_descriptor)
     run_experiment(fl_plan, server, clients, parameters)

@@ -1,6 +1,6 @@
 services:
   client1:
-    image: jcorcuera/fedxai_lib
+    image: jcorcuera/fedxai_frbc
     container_name: client1
     network_mode: host
     environment:
@@ -19,7 +19,7 @@ services:
       - /models:/models
 
   client2:
-    image: jcorcuera/fedxai_lib
+    image: jcorcuera/fedxai_frbc
     container_name: client2
     network_mode: host
     environment:
@@ -38,7 +38,7 @@ services:
       - /models:/models
 
   client3:
-    image: jcorcuera/fedxai_lib
+    image: jcorcuera/fedxai_frbc
     container_name: client3
     network_mode: host
     environment:
@@ -57,7 +57,7 @@ services:
       - /models:/models
 
   client4:
-    image: jcorcuera/fedxai_lib
+    image: jcorcuera/fedxai_frbc
     container_name: client4
     network_mode: host
     environment:
