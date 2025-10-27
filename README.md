@@ -1,18 +1,30 @@
-# FedXAI-lib · <img src="https://avatars.githubusercontent.com/u/153393?s=48&v=4" style="background:white;" alt="Erlang" width="28"/> + <img src="https://www.vectorlogo.zone/logos/python/python-icon.svg" alt="Python" width="28"/>  
-*A Federated Learning of Explainable Artificial Intelligence library
+# fedxai-lib
 
-**FedXAI-lib** is a TBU.
+[![License](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://opensource.org/licenses/Apache-2.0)
+<!--[![Citation](https://img.shields.io/badge/cite-citation-brightgreen)](#)-->
 
----
+fedxai-lib is a collection of Federated Learning (FL) of eXplainable Artificial Intelligence (XAI) library.
+
+
+This work has been developed by the [Artificial Intelligence R&D Group][ai_rnd_group] at the Department of Information Engineering, University of Pisa. 
+fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models. This work has been funded by the PNRR project - M4C2 - Investimento 1.3, Partenariato Esteso PE00000013 - ``FAIR - Future Artificial Intelligence Research`` - Spoke 1 ``Human-centered AI``, and by the Italian Ministry of University and Research (MUR) in the framework of the FoReLab and CrossLab projects (Departments of Excellence).
+
+
+<p align="center">
+	<img src="./images/logo-DII.png" alt="tree aggregator cert" style="height: 80px">
+	&emsp;&emsp;
+	<img src="./images/logo_fair.png" alt="tree aggregator cert" style="height: 80px">
+</p>
 
 ## 🧮 Supported Algorithms
 
-FedLang-Py currently implements the following Federated Learning algorithms:
+fedxai-lib currently implements the following Federated Learning algorithms:
 
 - **Federated Fuzzy C-Means** (Horizontal Partitioning)  
 - **Federated C-Means** (Horizontal Partitioning)  
 - **Federated Fuzzy C-Means** (Vertical Partitioning)  
-- **Federated Fuzzy Regression Tree (FRT)**  
+- **Federated Fuzzy Regression Tree (FRT)**
+- **Federated Fuzzy Classification Tree (FCT)**
 
 ---
 
@@ -27,17 +39,18 @@ Before running the framework, ensure that the following dependencies are install
 
 ## 📁 Project Structure
 
-FedXAI-lib follows a modular and extensible structure that allows Data Scientists to easily integrate and test new federated algorithms.
+fedxai-lib follows a modular and extensible structure:
 
 ```bash
 fedxai_lib/
-├── algorithms/                        # Federated algorithm implementations
-│   ├── federated_fc_means_horizontal  # Fuzzy C-Means (Horizontal)
-│   ├── federated_frt                  # Fuzzy Regression Tree (FRT)
-│   ├── ...
-tests/                             # Unit tests and local federation simulations
-│   ├── test_fed_fcmeans_xclara.py
-│   └── test_fed_frt_weather_izimir.py
+├── src/
+│    ├── algorithms/                        # Federated algorithm implementations
+│      ├── federated_fc_means_horizontal  # Fuzzy C-Means (Horizontal)
+│      ├── federated_frt                  # Fuzzy Regression Tree (FRT)
+│      ├── ...
+│    ├── tests/                             # Unit tests and local federation simulations
+│      ├── test_fed_fcmeans_xclara.py
+│      └── test_fed_frt_weather_izimir.py
 ├── pyproject.toml
 └── README.md
 ```
