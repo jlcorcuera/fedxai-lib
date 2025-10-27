@@ -24,6 +24,24 @@ fedxai-lib currently implements the following Federated Learning algorithms:
 - **Federated C-Means** (Horizontal Partitioning)  
 - **Federated Fuzzy C-Means** (Vertical Partitioning)  
 - **Federated Fuzzy Regression Tree (FRT)**
+
+| Parameter Name           | Data type  | Example                     | Description |
+|--------------------------|------------|-----------------------------|-------------|
+| gain_threshold           | float      | 0.0001                      | Value 1D    |
+| max_number_rounds        | int        | 100                         | Value 2D    |
+| num_fuzzy_sets           | int        | 5                           | Value 3D    |
+| max_depth                | int        | null                        | Value 3D    |
+| min_samples_split_ratio  | float      | 0.1                         | Value 3D    |
+| min_num_clients          | int        | 20                          | Value 3D    |
+| obfuscate                | bool       | true                        | Value 3D    |
+| features_names           | List[str]  | ['feat1', 'feat2']          | Value 3D    |
+| target                   | str        | 'target'                    | Value 3D    |
+| dataset_X_train          | str        | 'X_train.csv'               | Value 3D    |
+| dataset_y_train          | str        | 'y_train.csv'               | Value 3D    |
+| dataset_X_test           | str        | 'X_test.csv'                | Value 3D    |
+| dataset_y_test           | str        | 'y_test.csv'                | Value 3D    |
+| model_output_file        | str        | 'frt_weather_izimir.pickle' | Value 3D    |
+
 - **Federated Fuzzy Classification Tree (FCT)**
 
 ---
