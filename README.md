@@ -6,7 +6,7 @@
 fedxai-lib is a collection of Federated Learning (FL) of eXplainable Artificial Intelligence (XAI) library.
 
 
-This work has been developed by the [Artificial Intelligence R&D Group][ai_rnd_group] at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models. This work has been funded by the PNRR project - M4C2 - Investimento 1.3, Partenariato Esteso PE00000013 - ``FAIR - Future Artificial Intelligence Research`` - Spoke 1 ``Human-centered AI``, and by the Italian Ministry of University and Research (MUR) in the framework of the FoReLab and CrossLab projects (Departments of Excellence).
+This work has been developed by the [Artificial Intelligence R&D Group](https://ai.dii.unipi.it/) at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models. This work has been funded by the PNRR project - M4C2 - Investimento 1.3, Partenariato Esteso PE00000013 - ``FAIR - Future Artificial Intelligence Research`` - Spoke 1 ``Human-centered AI``, and by the Italian Ministry of University and Research (MUR) in the framework of the FoReLab and CrossLab projects (Departments of Excellence).
 
 
 <p align="center">
