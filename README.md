@@ -4,6 +4,8 @@
 
 **fedxai-lib** is a Python library for Federated Learning (FL) of eXplainable Artificial Intelligence (XAI) models. The library provides privacy-preserving implementations of interpretable machine learning algorithms, enabling distributed training while maintaining data privacy and model transparency.
 
+The current version of the framework includes the implementation of federated clustering algorithms (Fuzzy C-Means and C-Means for both horizontal and vertical data partitioning) [[3]](#3), a federated Fuzzy Regression Tree (FRT) algorithm for interpretable regression tasks [[2]](#2), and a federated Rule-Based Classifier (FRBC) for explainable classification [[4]](#4). These algorithms are designed to operate in distributed environments where data cannot be centralized due to privacy, regulatory, or operational constraints. All implementations support both horizontal partitioning (where each client holds different samples with all features) and vertical partitioning (where each client holds all samples but different features), depending on the algorithm. The library emphasizes model interpretability through fuzzy logic, linguistic rules, and tree-based structures, making the learned models transparent and understandable to domain experts and end users. All algorithms are built on top of the **fedlang** middleware [[1]](#1), which provides actor-based distributed execution support for federated learning experiments.
+
 This work has been developed by the [Artificial Intelligence R&D Group](https://ai.dii.unipi.it/) at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models.
 
 <p align="center">
@@ -16,48 +18,17 @@ This work has been developed by the [Artificial Intelligence R&D Group](https://
 
 ## Table of Contents
 
-- [Implemented Algorithms](#implemented-algorithms)
 - [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Local Federation Execution](#local-federation-execution)
   - [Docker-Based Distributed Federation](#docker-based-distributed-federation)
-- [Illustrative Example](#illustrative-example)
+- [Algorithm Hyperparameters](#algorithm-hyperparameters)
 - [License](#license)
 - [Contributors](#contributors)
 - [Citations](#citations)
 - [Acknowledgments](#acknowledgments)
-
----
-
-## Implemented Algorithms
-
-fedxai-lib currently implements the following Federated Learning algorithms for XAI:
-
-### Clustering Algorithms
-
-- **Federated Fuzzy C-Means** (Horizontal Partitioning) [[3]](#3)
-- **Federated C-Means** (Horizontal Partitioning) [[3]](#3)
-- **Federated Fuzzy C-Means** (Vertical Partitioning) [[3]](#3)
-- **Federated C-Means** (Vertical Partitioning) [[3]](#3)
-
-### Tree-Based Algorithms
-
-- **Federated Fuzzy Regression Tree (FRT)** [[2]](#2)
-  - Privacy-preserving fuzzy regression tree construction
-  - Interpretable rules with fuzzy set-based splits
-  - Obfuscation mechanisms to prevent inference attacks
-
-### Classification Algorithms
-
-- **Federated Rule-Based Classifier (FRBC)** [[4]](#4)
-  - Federated learning of explainable fuzzy rule-based classifiers
-  - Privacy-preserving rule aggregation and conflict resolution
-  - Interpretable IF-THEN rules for transparent decision-making
-  - Suitable for heterogeneous federated settings
-
-All algorithms are built on top of the **fedlang** middleware [[1]](#1), which provides actor-based distributed execution support for federated learning experiments.
 
 ---
 
@@ -110,12 +81,12 @@ Before using fedxai-lib, ensure the following dependencies are installed:
 
 The library depends on the following key packages (automatically installed via Poetry):
 
-- `fedlang-py >= 0.0.7` - Federated learning middleware
-- `pandas >= 2.3.3` - Data manipulation
-- `numpy >= 2.3.4` - Numerical computations
-- `numba >= 0.62.1` - Performance optimization
-- `scikit-learn >= 1.7.2` - Machine learning utilities
-- `simpful >= 2.12.0` - Fuzzy logic operations
+- `fedlang-py >= 0.0.7`
+- `pandas >= 2.3.3`
+- `numpy >= 2.3.4`
+- `numba >= 0.62.1`
+- `scikit-learn >= 1.7.2`
+- `simpful >= 2.12.0`
 
 ---
 
@@ -191,7 +162,10 @@ run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, param
 cd src
 poetry run python tests/test_fed_frt_weather_izimir.py
 poetry run python tests/test_fed_fcmeans_horizontal_xclara.py
+poetry run python tests/test_fed_rbc_rmi_demo_fedxai_lib.py
 ```
+
+Additional examples for all implemented algorithms can be found in the [src/tests/](src/tests/) directory.
 
 ### Docker-Based Distributed Federation
 
