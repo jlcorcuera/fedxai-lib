@@ -49,6 +49,14 @@ fedxai-lib currently implements the following Federated Learning algorithms for 
   - Interpretable rules with fuzzy set-based splits
   - Obfuscation mechanisms to prevent inference attacks
 
+### Classification Algorithms
+
+- **Federated Rule-Based Classifier (FRBC)** [[4]](#4)
+  - Federated learning of explainable fuzzy rule-based classifiers
+  - Privacy-preserving rule aggregation and conflict resolution
+  - Interpretable IF-THEN rules for transparent decision-making
+  - Suitable for heterogeneous federated settings
+
 All algorithms are built on top of the **fedlang** middleware [[1]](#1), which provides actor-based distributed execution support for federated learning experiments.
 
 ---
@@ -64,12 +72,8 @@ fedxai-lib/
 │   │   │   ├── federated_fcmeans_vertical/    # Fuzzy C-Means (Vertical)
 │   │   │   ├── federated_cmeans_horizontal/   # C-Means (Horizontal)
 │   │   │   ├── federated_cmeans_vertical/     # C-Means (Vertical)
-│   │   │   └── federated_frt/                 # Fuzzy Regression Tree
-│   │   │       ├── client.py           # Client-side logic
-│   │   │       ├── server.py           # Server-side aggregation
-│   │   │       ├── model.py            # Model representation
-│   │   │       ├── node.py             # Tree node structures
-│   │   │       └── utils/              # Algorithm utilities
+│   │   │   ├── federated_frt/                 # Fuzzy Regression Tree
+│   │   │   └── federated_frbc/                # Rule-Based Classifier
 │   │   ├── descriptors/                # Federated learning plan descriptors
 │   │   │   └── definitions/            # JSON-based execution plans
 │   │   └── __init__.py                 # Public API
@@ -206,8 +210,9 @@ docker build --progress=plain -f Dockerfile.fedxai_lib -t fedxai .
 docker build --progress=plain -f Dockerfile.requester -t fedlang-requester .
 
 # Launch federation infrastructure
-docker compose -f docker-compose-director.yml up -d  # On director machine
-docker compose -f docker-compose-clients.yml up -d   # On client machines
+# IMPORTANT: Start the director first, then the clients
+docker compose -f docker-compose-director.yml up -d  # On director machine (start first)
+docker compose -f docker-compose-clients.yml up -d   # On client machines (start after director)
 docker compose -f docker-compose-requester.yml up -d  # On requester machine
 
 # Execute federation
@@ -217,20 +222,6 @@ cd scripts
 ```
 
 For detailed instructions, configuration examples, and troubleshooting, see **[Illustrative_Example.md](Illustrative_Example.md)**.
-
----
-
-## Illustrative Example
-
-A comprehensive step-by-step example demonstrating the execution of a Federated Fuzzy Regression Tree using Docker containers is available in:
-
-**[Illustrative_Example.md](Illustrative_Example.md)**
-
-This example covers:
-- Dataset preparation and partitioning
-- Docker environment setup
-- Federation execution and monitoring
-- Model evaluation and interpretation
 
 ---
 
@@ -258,12 +249,12 @@ By contributing to this project, you agree that your contributions will be licen
 
 ## Contributors
 
-- **Alessio Bechini** - [alessio.bechini@unipi.it](mailto:alessio.bechini@unipi.it)
+- **Alessio Bechini** - [Google Scholar](https://scholar.google.it/citations?user=ooYOGP4AAAAJ&hl=it&oi=ao) - [alessio.bechini@unipi.it](mailto:alessio.bechini@unipi.it)
 - **José Luis Corcuera Bárcena** - [Google Scholar](https://scholar.google.com/) - [joseluis.corcuera@phd.unipi.it](mailto:joseluis.corcuera@phd.unipi.it)
-- **Mattia Daole** - [mattia.daole@phd.unipi.it](mailto:mattia.daole@phd.unipi.it)
+- **Mattia Daole** - [Google Scholar](https://scholar.google.it/citations?user=yNletAoAAAAJ&hl=it&oi=ao) - [mattia.daole@phd.unipi.it](mailto:mattia.daole@phd.unipi.it)
 - **Pietro Ducange** - [Google Scholar](https://scholar.google.com/) - [pietro.ducange@unipi.it](mailto:pietro.ducange@unipi.it)
 - **Francesco Marcelloni** - [Google Scholar](https://scholar.google.com/) - [francesco.marcelloni@unipi.it](mailto:francesco.marcelloni@unipi.it)
-- **Giustino Miglionico** - [giustino.miglionico@phd.unipi.it](mailto:giustino.miglionico@phd.unipi.it)
+- **Giustino Miglionico** - [Google Scholar](https://scholar.google.it/citations?user=GSRVwE4AAAAJ&hl=it&oi=ao) - [giustino.miglionico@phd.unipi.it](mailto:giustino.miglionico@phd.unipi.it)
 
 ---
 
@@ -309,6 +300,19 @@ If you use fedxai-lib in your research, please cite the relevant papers:
   author={[Authors to be specified]},
   journal={[To be published]},
   year={2025}
+}
+```
+
+### <a name="4"></a>[4] Federated Rule-Based Classifier (FRBC)
+
+```bibtex
+@inproceedings{daole2024trustworthy,
+  title={Trustworthy AI in heterogeneous settings: federated learning of explainable classifiers},
+  author={Daole, M. and Ducange, P. and Marcelloni, F. and Renda, A.},
+  booktitle={2024 IEEE International Conference on Fuzzy Systems (FUZZ-IEEE)},
+  pages={1--9},
+  year={2024},
+  organization={IEEE}
 }
 ```
 

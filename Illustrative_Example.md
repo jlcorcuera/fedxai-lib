@@ -559,16 +559,14 @@ After completing this example, you can:
 1. **Experiment with different algorithms**: Try Federated Fuzzy C-Means clustering
 2. **Adjust hyperparameters**: Modify `num_fuzzy_sets`, `gain_threshold`, or `obfuscate`
 3. **Use your own datasets**: Follow the data partitioning approach in test scripts
-4. **Implement custom algorithms**: See the [CLAUDE.md](CLAUDE.md) guide for adding new algorithms
-5. **Scale to more clients**: Add additional client services in docker-compose-clients.yml
+4. **Scale to more clients**: Add additional client services in docker-compose-clients.yml
 
 ---
 
 ## Additional Resources
 
 - **Main README**: [README.md](README.md)
-- **Development Guide**: [CLAUDE.md](CLAUDE.md)
 - **GitHub Repository**: https://github.com/jlcorcuera/fedxai-lib
-- **Research Papers**: See [Citations](README_DRAFT.md#citations) section
+- **Research Papers**: See [Citations](README.md#citations) section
 
-For questions or issues, please contact the [contributors](README_DRAFT.md#contributors) or open an issue on GitHub.
+For questions or issues, please contact the [contributors](README.md#contributors) or open an issue on GitHub.
