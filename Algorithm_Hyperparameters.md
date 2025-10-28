@@ -233,7 +233,7 @@ parameters = {
 
 **Algorithm**: `FedXAIAlgorithm.FED_FRBC_HORIZONTAL`
 
-**Local execution example**: [test_frbc_RMI_DEMO_fedxai_lib.py](src/tests/test_frbc_RMI_DEMO_fedxai_lib.py)
+**Local execution example**: [test_frbc_RMI_DEMO_fedxai_lib.py](src/tests/test_fed_rbc_rmi_demo_fedxai_lib.py)
 
 ### Hyperparameters
 
