@@ -1,0 +1,15 @@
+# ---
+# Builder stage: compile and package the Erlang application
+# To build the image: docker build --progress=plain -f Dockerfile.fedxai_lib -t jcorcuera/fedxai_lib .
+# ---
+FROM jcorcuera/fedxai_lib
+
+WORKDIR /plans
+COPY src/fedxai_lib/descriptors/definitions .
+
+WORKDIR /app/scripts
+COPY src/scripts .
+
+
+
+WORKDIR /app

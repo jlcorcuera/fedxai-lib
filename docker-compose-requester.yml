@@ -4,7 +4,17 @@ services:
     container_name: requester
     environment:
       ERL_FLAGS: -setcookie 050df51e-1c75-433e-95c3-8e3e1926d6a6 -name test@172.20.0.254
-      FEDLANG_DIRECTOR_NAME: director@172.16.2.185
+      FEDLANG_DIRECTOR_NAME: director@172.20.0.2
     volumes:
-      - /models:/models
+      - ./models:/models
     command: tail -f /dev/null
+    networks:
+      fedlang_net:
+        ipv4_address: 172.20.0.17
+
+networks:
+  fedlang_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

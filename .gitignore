@@ -5,6 +5,7 @@ __pycache__/
 .idea/
 # C extensions
 *.so
+*.pickle
 datasets_splits/
 requirements.txt
 # Distribution / packaging

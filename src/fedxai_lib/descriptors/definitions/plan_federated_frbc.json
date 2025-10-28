@@ -1,0 +1,49 @@
+{
+   "name": "Federated Fuzzy Rule Based Classifier",
+   "server_class": "fedxai_lib.algorithms.federated_frbc.server.FederatedFRBCServer",
+   "client_class": "fedxai_lib.algorithms.federated_frbc.client.FederatedFRBCClient",
+   "stages": [
+       {
+          "name": "Initialization of parties",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "init_frbc"
+             }
+          ]
+       },
+       {
+          "name": "Generate Rule Base",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#available_clients",
+                "method": "generate_local_RB"
+             },
+             {
+                "entity": "#server",
+                "method": "aggregate_local_RBs"
+             }
+          ]
+       },
+       {
+          "name": "Save FRBC model",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "save_model"
+             },
+            {
+                "entity": "#available_clients",
+                "method": "save_model"
+             }
+          ]
+       }
+   ]
+}
