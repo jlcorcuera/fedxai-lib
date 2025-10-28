@@ -62,7 +62,7 @@ The dataset contains meteorological measurements from Izimir, Turkey, with the f
 
 ### Data Partitioning
 
-The dataset is partitioned horizontally into 5 client datasets using K-Fold cross-validation:
+The dataset is partitioned horizontally into 4 client datasets:
 
 ```
 datasets_splits/WeatherIzimir/
@@ -72,10 +72,10 @@ datasets_splits/WeatherIzimir/
 ├── client_y_test_1.csv
 ├── client_X_train_2.csv
 ├── client_y_train_2.csv
-├── ... (clients 3, 4, 5)
+├── ... (clients 3, 4)
 ```
 
-Each client receives approximately 20% of the data, ensuring IID (Independent and Identically Distributed) partitioning.
+Each client receives approximately 25% of the data, ensuring IID (Independent and Identically Distributed) partitioning.
 
 ---
 
@@ -138,6 +138,7 @@ The repository includes three compose files:
 | `FEDLANG_NODE_NAME`     | Unique node identifier (format: name@IP)        |
 | `FEDLANG_COOKIE`        | Erlang cookie for distributed authentication     |
 | `FEDLANG_DIRECTOR_NAME` | Director node identifier for clients to connect  |
+| `ERL_FLAGS`             | Erlang runtime flags for configuring the Erlang node (e.g., `-setcookie` for authentication, distributed port configuration) |
 
 ---
 
@@ -153,7 +154,7 @@ poetry run python tests/test_fed_frt_weather_izimir.py
 This script:
 1. Loads the raw `WeatherIzimir.csv` dataset
 2. Normalizes features using RobustScaler and MinMaxScaler
-3. Partitions data into 5 client datasets using K-Fold
+3. Partitions data into 4 client datasets as an example (see test files for implementation details on dataset partitioning)
 4. Saves partitions to `datasets_splits/WeatherIzimir/`
 
 **Verify data partitions exist:**
@@ -168,7 +169,7 @@ client_X_train_1.csv
 client_y_train_1.csv
 client_X_test_1.csv
 client_y_test_1.csv
-... (20 files total for 5 clients)
+... (16 files total for 4 clients)
 ```
 
 ---
@@ -237,9 +238,25 @@ docker logs director
 
 **Expected Output:**
 ```
-Starting Erlang node: director@172.16.2.185
-FedLang Director initialized successfully
-Waiting for client connections...
+=INFO REPORT==== 18-Oct-2025::22:17:01.404054 ===
+Starting node type: "director"
+=INFO REPORT==== 18-Oct-2025::22:17:01.404170 ===
+Fedlang director, start_link
+=INFO REPORT==== 18-Oct-2025::22:17:01.404301 ===
+Fedlang director, init
+=PROGRESS REPORT==== 18-Oct-2025::22:17:01.404427 ===
+    supervisor: {local,fedlang_sup}
+    started: [{pid,<0.302.0>},
+              {id,fedlang_director},
+              {mfargs,{fedlang_director,start_link,[]}},
+              {restart_type,permanent},
+              {significant,false},
+              {shutdown,5000},
+              {child_type,worker}]
+
+=PROGRESS REPORT==== 18-Oct-2025::22:17:01.404623 ===
+    application: fedlang
+    started_at: 'director@172.16.2.185'
 ```
 
 ### Step 4: Launch Client Nodes
@@ -262,9 +279,29 @@ docker logs client4
 
 **Expected Output (per client):**
 ```
-Starting Erlang node: client1@172.16.6.42
-Connected to director: director@172.16.2.185
-FedLang Client ready for federations
+=INFO REPORT==== 18-Oct-2025::22:25:58.015750 ===
+Starting node type: "client"
+=INFO REPORT==== 18-Oct-2025::22:25:58.015813 ===
+Fedlang client, start_link
+=INFO REPORT==== 18-Oct-2025::22:25:58.015883 ===
+Fedlang client, init
+=PROGRESS REPORT==== 18-Oct-2025::22:25:58.015986 ===
+    supervisor: {local,inet_gethost_native_sup}
+    started: [{pid,<0.304.0>},{mfa,{inet_gethost_native,init,[[]]}}]
+
+=PROGRESS REPORT==== 18-Oct-2025::22:25:58.030063 ===
+    supervisor: {local,fedlang_sup}
+    started: [{pid,<0.302.0>},
+              {id,fedlang_client},
+              {mfargs,{fedlang_client,start_link,[]}},
+              {restart_type,permanent},
+              {significant,false},
+              {shutdown,5000},
+              {child_type,worker}]
+
+=PROGRESS REPORT==== 18-Oct-2025::22:25:58.030220 ===
+    application: fedlang
+    started_at: 'client1@172.16.6.42'
 ```
 
 ### Step 5: Launch Requester Node
@@ -314,19 +351,19 @@ cat executions/federated_frt_weather_izimir.json
 {
   "algorithm": "federated_frt",
   "parameters": {
-    "gain_threshold": 0.0001,           // Minimum information gain for splits
-    "max_number_rounds": 100,           // Maximum tree depth (rounds)
-    "num_fuzzy_sets": 5,                // Number of fuzzy sets per feature
-    "max_depth": null,                  // No depth limit
-    "min_samples_split_ratio": 0.1,     // Min 10% of samples to split
-    "min_num_clients": 20,              // Minimum samples for privacy
-    "obfuscate": true,                  // Enable privacy obfuscation
-    "features_names": [                 // Input feature names
+    "gain_threshold": 0.0001,
+    "max_number_rounds": 100,
+    "num_fuzzy_sets": 5,
+    "max_depth": null,
+    "min_samples_split_ratio": 0.1,
+    "min_num_clients": 20,
+    "obfuscate": true,
+    "features_names": [
       "Max_temperature", "Min_temperature", "Dewpoint",
       "Precipitation", "Sea_level_pressure", "Standard_pressure",
       "Visibility", "Wind_speed", "Max_wind_speed"
     ],
-    "target": "Mean_temperature",       // Target variable
+    "target": "Mean_temperature",
     "dataset_X_train": "/dataset/X_train.csv",
     "dataset_y_train": "/dataset/y_train.csv",
     "dataset_X_test": "/dataset/X_test.csv",
@@ -335,6 +372,8 @@ cat executions/federated_frt_weather_izimir.json
   }
 }
 ```
+
+For detailed parameter specifications, see [Algorithm_Hyperparameters.md](Algorithm_Hyperparameters.md).
 
 ### Step 3: Execute Federation
 
@@ -346,63 +385,51 @@ Run the federation script:
 
 ### Step 4: Monitor Execution
 
-The federation execution proceeds through the following stages:
+The federation execution proceeds through multiple stages. You can monitor the execution by checking the director node logs:
 
-**Stage 1: Initialization**
-```
-[Stage 1/7] Initialization of parties
-  -> Server initialization
-  -> Client initialization (4 clients)
+```bash
+docker logs -f director
 ```
 
-**Stage 2: Tree Initialization**
-```
-[Stage 2/7] Initializing tree
-  -> Clients compute root node statistics (WSS, WLS, WS)
-  -> Server initializes root node with variance
-```
+**Example output from the director node:**
 
-**Stage 3: Tree Growing** (Iterative)
 ```
-[Stage 3/7] Grow tree (Round 1)
-  -> Server selects features to evaluate
-  -> Clients compute fuzzy set statistics per feature
-  -> Server selects best feature split (max information gain)
-  -> Server grows tree nodes
-
-[Stage 3/7] Grow tree (Round 2)
-  -> Process repeats for new tree level
-  ...
-```
-
-**Stage 4: Model Building**
-```
-[Stage 4/7] Initialize tree model
-  -> Server extracts fuzzy rules from tree structure
-```
-
-**Stage 5: Consequent Computation**
-```
-[Stage 5/7] Computing consequents
-  -> Clients compute weighted least squares matrices
-  -> Server aggregates and solves for consequent parameters
-```
-
-**Stage 6: Rule Weight Computation**
-```
-[Stage 6/7] Computing rules' weights
-  -> Clients compute firing strengths and errors
-  -> Server computes fuzzy confidence and support
-  -> Server calculates final rule weights
-```
-
-**Stage 7: Model Saving**
-```
-[Stage 7/7] Save tree model
-  -> Server saves global model to /models/frt_weather_izimir.pickle
-  -> Clients save personalized models (optional)
-
-Federation completed successfully!
+=INFO REPORT==== 18-Oct-2025::22:28:30.974575 ===
+Begin: Round=1, Step=2, Entity="#available_clients", Method="compute_rule_weights_step1"
+=INFO REPORT==== 18-Oct-2025::22:28:31.180870 ===
+End: Round=1, Step=2, Entity="#available_clients", Method="compute_rule_weights_step1"
+=INFO REPORT==== 18-Oct-2025::22:28:31.181253 ===
+Begin: Round=1, Step=3, Entity="#server", Method="compute_rule_error_stats"
+=INFO REPORT==== 18-Oct-2025::22:28:31.182416 ===
+End: Round=1, Step=3, Entity="#server", Method="compute_rule_error_stats"
+=INFO REPORT==== 18-Oct-2025::22:28:31.182627 ===
+Begin: Round=1, Step=4, Entity="#available_clients", Method="compute_weight_rules_step2"
+=INFO REPORT==== 18-Oct-2025::22:28:31.214616 ===
+End: Round=1, Step=4, Entity="#available_clients", Method="compute_weight_rules_step2"
+=INFO REPORT==== 18-Oct-2025::22:28:31.214972 ===
+Begin: Round=1, Step=5, Entity="#server", Method="compute_rule_weights"
+=INFO REPORT==== 18-Oct-2025::22:28:31.217633 ===
+End: Round=1, Step=5, Entity="#server", Method="compute_rule_weights"
+=INFO REPORT==== 18-Oct-2025::22:28:31.217993 ===
+Begin: Round=1, Step=1, Entity="#server", Method="save_model"
+2025-10-18 22:28:31,218 [MainThread  ] [INFO ]  model_output_file = /models/frt_weather_izimir.pickle
+=INFO REPORT==== 18-Oct-2025::22:28:31.226569 ===
+End: Round=1, Step=1, Entity="#server", Method="save_model"
+=INFO REPORT==== 18-Oct-2025::22:28:31.226855 ===
+Begin: Round=1, Step=2, Entity="#available_clients", Method="save_model"
+=INFO REPORT==== 18-Oct-2025::22:28:31.239358 ===
+End: Round=1, Step=2, Entity="#available_clients", Method="save_model"
+=INFO REPORT==== 18-Oct-2025::22:28:31.239746 ===
+Notifying end client: "3b59b111-9ddd-48a4-ae99-42028801757a"
+=INFO REPORT==== 18-Oct-2025::22:28:31.240053 ===
+Notifying end client: "43bd4712-27cb-4e2f-8af1-318d2fca0309"
+=INFO REPORT==== 18-Oct-2025::22:28:31.240238 ===
+Notifying end client: "66870db7-b0c2-4092-a582-f23c30b4b448"
+=INFO REPORT==== 18-Oct-2025::22:28:31.240591 ===
+Notifying end client: "b01ef527-627c-49f6-b7cf-8d0cb32ec25b"
+=INFO REPORT==== 18-Oct-2025::22:28:31.240918 ===
+handle_info, incoming message {fl_end_str_run,
+                                  "b2ad6fbc-1307-4f27-a2e3-8f15c0016f57"}
 ```
 
 ### Step 5: Retrieve Trained Model
@@ -471,30 +498,6 @@ print(f"Activated Rule ID: {rule_id}")
 print(f"Number of Active Rules: {num_active_rules}")
 ```
 
-### Privacy Guarantees
-
-The obfuscation mechanism nullifies statistics when:
-
-1. **Case 1**: A fuzzy set has only 1-2 samples (risk of individual record inference)
-2. **Case 2**: A fuzzy set is isolated (neighbors have zero samples)
-3. **Case 3**: Root node statistics could expose overall distribution
-
-Check obfuscation statistics:
-
-```python
-# In client logs
-client.get_privacy_stats()
-```
-
-**Example Output:**
-```
-client_id: 0
-total_obfuscation_checks: 450
-obfuscation_applied_case1: 23  (5.1%)
-obfuscation_applied_case2: 12  (2.7%)
-obfuscation_applied_case3: 8   (1.8%)
-```
-
 ---
 
 ## Troubleshooting
@@ -549,17 +552,6 @@ ls /models/  # Empty directory
 1. Check volume mount exists: `docker inspect director | grep models`
 2. Verify permissions: `ls -ld /models` (should be writable)
 3. Check server logs for write errors: `docker logs director`
-
----
-
-## Next Steps
-
-After completing this example, you can:
-
-1. **Experiment with different algorithms**: Try Federated Fuzzy C-Means clustering
-2. **Adjust hyperparameters**: Modify `num_fuzzy_sets`, `gain_threshold`, or `obfuscate`
-3. **Use your own datasets**: Follow the data partitioning approach in test scripts
-4. **Scale to more clients**: Add additional client services in docker-compose-clients.yml
 
 ---
 

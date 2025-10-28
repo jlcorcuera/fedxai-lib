@@ -224,7 +224,7 @@ By contributing to this project, you agree that your contributions will be licen
 ## Contributors
 
 - **Alessio Bechini** - [Google Scholar](https://scholar.google.it/citations?user=ooYOGP4AAAAJ&hl=it&oi=ao) - [alessio.bechini@unipi.it](mailto:alessio.bechini@unipi.it)
-- **José Luis Corcuera Bárcena** - [Google Scholar](https://scholar.google.com/) - [joseluis.corcuera@phd.unipi.it](mailto:joseluis.corcuera@phd.unipi.it)
+- **José Luis Corcuera Bárcena** - [Google Scholar](https://scholar.google.com/) - [jose.corcuera@ing.unipi.it](mailto:jose.corcuera@ing.unipi.it)
 - **Mattia Daole** - [Google Scholar](https://scholar.google.it/citations?user=yNletAoAAAAJ&hl=it&oi=ao) - [mattia.daole@phd.unipi.it](mailto:mattia.daole@phd.unipi.it)
 - **Pietro Ducange** - [Google Scholar](https://scholar.google.com/) - [pietro.ducange@unipi.it](mailto:pietro.ducange@unipi.it)
 - **Francesco Marcelloni** - [Google Scholar](https://scholar.google.com/) - [francesco.marcelloni@unipi.it](mailto:francesco.marcelloni@unipi.it)
