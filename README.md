@@ -234,6 +234,20 @@ This example covers:
 
 ---
 
+## Algorithm Hyperparameters
+
+Detailed documentation of all hyperparameters for each implemented algorithm is available in:
+
+**[Algorithm_Hyperparameters.md](Algorithm_Hyperparameters.md)**
+
+This reference provides:
+- Complete hyperparameter descriptions for all algorithms
+- Parameter types, default values, and valid ranges
+- Usage examples and best practices
+- Privacy-related parameter configurations
+
+---
+
 ## License
 
 This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
