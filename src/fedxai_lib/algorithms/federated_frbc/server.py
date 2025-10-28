@@ -4,8 +4,7 @@ import pickle
 import numpy as np
 from fedlangpy.core.entities import FedlangEntity, pickle_io
 
-from fedxai_lib.algorithms.federated_frbc.frbcs_dynamic_fs_gpu import \
-    FRBC_no_opt
+from fedxai_lib.algorithms.federated_frbc.frbcs_fedxai_lib import FRBC_no_opt
 from fedxai_lib.algorithms.federated_frt.utils.custom_logger import logger_info
 
 

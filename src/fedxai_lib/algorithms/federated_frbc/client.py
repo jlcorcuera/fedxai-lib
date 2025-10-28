@@ -54,9 +54,6 @@ class FederatedFRBCClient(FedlangEntity):
         
         self.X_train = kwargs.get("X_train")
         self.y_train = kwargs.get("y_train")
-        # self.X_test = kwargs.get("X_test")
-        # self.y_test = kwargs.get("y_test")
-
 
     def init_frbc(self, input_params=None):
         
@@ -179,24 +176,13 @@ class FederatedFRBCClient(FedlangEntity):
         return np.array(list_firing_strengths)
     
 
-    def _fit_gpu(self, x_training, y_training):
+    def _fit_parallelized(self, x_training, y_training):
 
         antecedents, membershipTable = self._generate_antecedents_data(x_training)
         self._antecedents, self._consequents = self._remove_duplicate_rules(antecedents=antecedents, consequents=self.y_train)
         
-        # print(self._antecedents.shape)
-        # print(self._consequents.shape)
 
         self.certaintyFactors, self.penalized_CFs, self.CFs_denominator = compute_certainty_factor_numba(membershipTable, self._antecedents, self._consequents, y_training, self.num_features)
-        # print("----------CFs-------------")
-        # print("CF:" + str(self.certaintyFactors.shape))
-        # print("CF:" + str(self.penalized_CFs.shape))
-        # print("CF:" + str(self.CFs_denominator.shape))
-        # print(self.certaintyFactors)
-        # print("---------------------------")
-        # print(self.penalized_CFs)
-        # print("---------------------------")
-        # print(self.CFs_denominator)
         self.weights = np.divide(self.certaintyFactors,self.CFs_denominator)
         return self._antecedents, self._consequents, self.certaintyFactors, self.CFs_denominator
     
@@ -223,12 +209,7 @@ class FederatedFRBCClient(FedlangEntity):
                
                 index_feature+=1
             index_sample +=1
-            # if index_sample > 10:
-            #     return
             antecedents.append(antecedent)
-        # print("numpy matrix shape: " + str(mem_numpy.shape))
-
-
         return np.array(antecedents), mem_numpy
 
     def _remove_duplicate_rules(self, antecedents: np.ndarray, consequents: np.ndarray):
@@ -243,8 +224,6 @@ class FederatedFRBCClient(FedlangEntity):
         
         return antecedents, consequents
     
-    
-    
     @pickle_io
     def generate_local_RB(self, input_params=None) -> dict:
 
@@ -252,7 +231,7 @@ class FederatedFRBCClient(FedlangEntity):
         Generates the local rule base from the training data.
         :return: Antecedents and consequents of the local rule base.
         """
-        antecedents, consequents, certaintyFactors, CF_denominator = self._fit_gpu(self.X_train, self.y_train)
+        antecedents, consequents, certaintyFactors, CF_denominator = self._fit_parallelized(self.X_train, self.y_train)
         dict_rb = {
             'antecedents': antecedents,
             'consequents': consequents,
