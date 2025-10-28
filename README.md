@@ -117,8 +117,6 @@ The library depends on the following key packages (automatically installed via P
 
 ## Installation
 
-### Using Poetry (Recommended)
-
 ```bash
 # Clone the repository
 git clone https://github.com/jlcorcuera/fedxai-lib.git
@@ -126,17 +124,6 @@ cd fedxai-lib
 
 # Install dependencies
 poetry install
-```
-
-### Using pip
-
-```bash
-# Clone the repository
-git clone https://github.com/jlcorcuera/fedxai-lib.git
-cd fedxai-lib
-
-# Install from requirements file
-pip install -r requirements.txt
 ```
 
 ---
@@ -204,82 +191,32 @@ poetry run python tests/test_fed_fcmeans_horizontal_xclara.py
 
 ### Docker-Based Distributed Federation
 
-For realistic federated scenarios, deploy the system using Docker containers distributed across multiple machines.
+For realistic federated scenarios with Docker containers distributed across multiple machines, please refer to the comprehensive [Illustrative Example](Illustrative_Example.md) which provides:
 
-**Step 1: Build Docker Images**
+- Step-by-step Docker infrastructure setup
+- Environment configuration guidelines
+- Federation execution and monitoring
+- Troubleshooting common issues
+
+**Quick Start:**
 
 ```bash
-# Build fedxai library image (for clients and director)
+# Build Docker images
 docker build --progress=plain -f Dockerfile.fedxai_lib -t fedxai .
-
-# Build requester image (for sending federation requests)
 docker build --progress=plain -f Dockerfile.requester -t fedlang-requester .
-```
 
-**Step 2: Configure Docker Compose Files**
+# Launch federation infrastructure
+docker compose -f docker-compose-director.yml up -d  # On director machine
+docker compose -f docker-compose-clients.yml up -d   # On client machines
+docker compose -f docker-compose-requester.yml up -d  # On requester machine
 
-The repository includes three compose files:
-
-- `docker-compose-director.yml` - Runs the director (server/aggregator) node
-- `docker-compose-clients.yml` - Runs client nodes with their data partitions
-- `docker-compose-requester.yml` - Runs the requester node to initiate federations
-
-**Key environment variables:**
-
-| Variable                | Description                                      |
-|-------------------------|--------------------------------------------------|
-| `FEDLANG_NODE_TYPE`     | Node type: `director`, `client`, or `requester` |
-| `FEDLANG_NODE_NAME`     | Unique node identifier (format: name@IP)        |
-| `FEDLANG_COOKIE`        | Erlang cookie for distributed authentication     |
-| `FEDLANG_DIRECTOR_NAME` | Director node identifier for clients to connect  |
-
-**Step 3: Launch Federation Infrastructure**
-
-```bash
-# On the director machine
-docker compose -f docker-compose-director.yml up -d
-
-# On client machines (adjust IPs and data volumes)
-docker compose -f docker-compose-clients.yml up -d
-
-# On the requester machine
-docker compose -f docker-compose-requester.yml up -d
-```
-
-**Step 4: Execute Federated Learning**
-
-Access the requester container and run a federation:
-
-```bash
-# Enter requester container
+# Execute federation
 docker exec -it requester /bin/bash
-
-# Navigate to scripts directory
 cd scripts
-
-# Run federation with configuration file
 ./run_federation.sh ./executions/federated_frt_weather_izimir.json
 ```
 
-The JSON configuration file specifies the algorithm and parameters:
-
-```json
-{
-  "algorithm": "federated_frt",
-  "parameters": {
-    "gain_threshold": 0.0001,
-    "max_number_rounds": 100,
-    "num_fuzzy_sets": 5,
-    "max_depth": null,
-    "min_samples_split_ratio": 0.1,
-    "obfuscate": true,
-    "features_names": ["Max_temperature", "Min_temperature", ...],
-    "target": "Mean_temperature",
-    "dataset_X_train": "/dataset/X_train.csv",
-    "model_output_file": "/models/frt_weather_izimir.pickle"
-  }
-}
-```
+For detailed instructions, configuration examples, and troubleshooting, see **[Illustrative_Example.md](Illustrative_Example.md)**.
 
 ---
 

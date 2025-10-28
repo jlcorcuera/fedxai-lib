@@ -104,6 +104,8 @@ fedxai-lib/
 
 ### Build Docker Images
 
+For realistic federated scenarios, deploy the system using Docker containers distributed across multiple machines.
+
 ```bash
 # Navigate to repository root
 cd fedxai-lib
@@ -121,6 +123,21 @@ docker build --progress=plain -f Dockerfile.requester -t fedlang-requester .
 Successfully tagged fedxai:latest
 Successfully tagged fedlang-requester:latest
 ```
+
+The repository includes three compose files:
+
+- `docker-compose-director.yml` - Runs the director (server/aggregator) node
+- `docker-compose-clients.yml` - Runs client nodes with their data partitions
+- `docker-compose-requester.yml` - Runs the requester node to initiate federations
+
+**Key environment variables:**
+
+| Variable                | Description                                      |
+|-------------------------|--------------------------------------------------|
+| `FEDLANG_NODE_TYPE`     | Node type: `director`, `client`, or `requester` |
+| `FEDLANG_NODE_NAME`     | Unique node identifier (format: name@IP)        |
+| `FEDLANG_COOKIE`        | Erlang cookie for distributed authentication     |
+| `FEDLANG_DIRECTOR_NAME` | Director node identifier for clients to connect  |
 
 ---
 
