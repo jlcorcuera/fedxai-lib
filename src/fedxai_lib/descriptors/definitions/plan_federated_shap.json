@@ -1,0 +1,96 @@
+{
+   "name": "Federated SHAP using Fuzzy c-means for background dataset",
+   "server_class": "fedxai_lib.algorithms.federated_shap.server.FederatedShapServer",
+   "client_class": "fedxai_lib.algorithms.federated_shap.client.FederatedShapClient",
+   "stages": [
+       {
+          "name": "Initialization of parties",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "init"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "fetch_stats"
+             },
+             {
+                "entity": "#server",
+                "method": "register_clients"
+             }
+          ]
+       },
+       {
+          "name": "Initialization of centroids",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "select_one_client",
+                "output": "#selected_clients"
+             },
+             {
+                "entity": "#selected_clients",
+                "method": "init_centers"
+             },
+             {
+                "entity": "#server",
+                "method": "init_centers"
+             }
+          ]
+       },
+       {
+          "name": "Run federation",
+          "type": "run_many",
+          "stop_condition": "stop_federation",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "sample_clients",
+                "output": "#selected_clients"
+             },
+             {
+                "entity": "#server",
+                "method": "get_centers"
+             },
+             {
+                "entity": "#selected_clients",
+                "method": "evaluate_cluster_assignment"
+             },
+             {
+                "entity": "#server",
+                "method": "process_clustering_results"
+             }
+          ]
+       },
+       {
+          "name": "Build SHAP model",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "build_shap_model"
+             }
+          ]
+       },
+       {
+          "name": "Save results",
+          "type": "run_once",
+          "pipeline": [
+             {
+                "entity": "#server",
+                "method": "save_model"
+             },
+             {
+                "entity": "#available_clients",
+                "method": "save_model"
+             }
+          ]
+       }
+   ]
+}

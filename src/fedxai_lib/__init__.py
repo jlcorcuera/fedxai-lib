@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-  @Filename:    __init__.py
-  @Author:      José Luis Corcuera Bárcena
-  @Time:        7/4/25 11:45 AM
-"""
+# Copyright (C) 2025 AI&RD Research Group, Department of Information Engineering, University of Pisa
+# SPDX-License-Identifier: Apache-2.0
+
 from enum import Enum
 
 from fedlangpy.core.utils import run_experiment
@@ -23,10 +19,9 @@ class FedXAIAlgorithm(Enum):
     FED_CMEANS_VERTICAL = (4, "plan_federated_fcmeans_vertical.json")
     FED_FRT_HORIZONTAL = (5, "plan_federated_frt.json")
     FED_FRBC_HORIZONTAL = (6, "plan_federated_frbc.json")
+    FED_SHAP = (7, "plan_federated_shap.json")
 
 
 def run_fedxai_experiment(algorithm: FedXAIAlgorithm, server, clients, parameters):
-    fl_plan = load_fedxai_plan(algorithm.json_descriptor)
-    run_experiment(fl_plan, server, clients, parameters)
     fl_plan = load_fedxai_plan(algorithm.json_descriptor)
     run_experiment(fl_plan, server, clients, parameters)

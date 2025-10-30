@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-  @Filename:    load_plan_test
-  @Author:      José Luis Corcuera Bárcena
-  @Time:        7/4/25 12:08 PM
-"""
+# Copyright (C) 2025 AI&RD Research Group, Department of Information Engineering, University of Pisa
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 import pandas as pd
 from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm

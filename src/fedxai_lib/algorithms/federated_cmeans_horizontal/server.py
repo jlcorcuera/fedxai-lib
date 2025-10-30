@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-  @Filename:    federated_cmeans_horizontal
-  @Author:      José Luis Corcuera Bárcena
-  @Time:        7/4/25 1:46 PM
-"""
+# Copyright (C) 2025 AI&RD Research Group, Department of Information Engineering, University of Pisa
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import Final, List
 import numpy as np
 import random

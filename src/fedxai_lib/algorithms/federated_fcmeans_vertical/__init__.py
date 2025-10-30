@@ -1,7 +1,2 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-  @Filename:    __init__.py
-  @Author:      José Luis Corcuera Bárcena
-  @Time:        7/16/25 11:38 AM
-"""
+# Copyright (C) 2025 AI&RD Research Group, Department of Information Engineering, University of Pisa
+# SPDX-License-Identifier: Apache-2.0
