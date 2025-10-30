@@ -4,7 +4,7 @@
 
 **fedxai-lib** is a Python library for Federated Learning (FL) of eXplainable Artificial Intelligence (XAI) models. The library provides privacy-preserving implementations of interpretable machine learning algorithms, enabling distributed training while maintaining data privacy and model transparency.
 
-The current version of the framework includes the implementation of federated clustering algorithms (Fuzzy C-Means and C-Means for both horizontal and vertical data partitioning) [[3]](#3), a federated Fuzzy Regression Tree (FRT) algorithm for interpretable regression tasks [[2]](#2), and a federated Rule-Based Classifier (FRBC) for explainable classification [[4]](#4). These algorithms are designed to operate in distributed environments where data cannot be centralized due to privacy, regulatory, or operational constraints. All implementations support both horizontal partitioning (where each client holds different samples with all features) and vertical partitioning (where each client holds all samples but different features), depending on the algorithm. The library emphasizes model interpretability through fuzzy logic, linguistic rules, and tree-based structures, making the learned models transparent and understandable to domain experts and end users. All algorithms are built on top of the **fedlang** middleware [[1]](#1), which provides actor-based distributed execution support for federated learning experiments.
+The current version of the framework includes the implementation of federated clustering algorithms (Fuzzy C-Means and C-Means for both horizontal and vertical data partitioning) [[3]](#3), a federated Fuzzy Regression Tree (FRT) algorithm for interpretable regression tasks [[2]](#2), a federated Rule-Based Classifier (FRBC) for explainable classification [[4]](#4), and a federated SHAP implementation for consistent post-hoc explainability [[5]](#5). These algorithms are designed to operate in distributed environments where data cannot be centralized due to privacy, regulatory, or operational constraints. All implementations support both horizontal partitioning (where each client holds different samples with all features) and vertical partitioning (where each client holds all samples but different features), depending on the algorithm. The library emphasizes model interpretability through fuzzy logic, linguistic rules, tree-based structures, and explainability methods, making the learned models transparent and understandable to domain experts and end users. All algorithms are built on top of the **fedlang** middleware [[1]](#1), which provides actor-based distributed execution support for federated learning experiments.
 
 This work has been developed by the [Artificial Intelligence R&D Group](https://ai.dii.unipi.it/) at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models.
 
@@ -44,7 +44,8 @@ fedxai-lib/
 │   │   │   ├── federated_cmeans_horizontal/   # C-Means (Horizontal)
 │   │   │   ├── federated_cmeans_vertical/     # C-Means (Vertical)
 │   │   │   ├── federated_frt/                 # Fuzzy Regression Tree
-│   │   │   └── federated_frbc/                # Rule-Based Classifier
+│   │   │   ├── federated_frbc/                # Rule-Based Classifier
+│   │   │   └── federated_shap/                # Federated SHAP
 │   │   ├── descriptors/                # Federated learning plan descriptors
 │   │   │   └── definitions/            # JSON-based execution plans
 │   │   └── __init__.py                 # Public API
@@ -87,6 +88,7 @@ The library depends on the following key packages (automatically installed via P
 - `numba >= 0.62.1`
 - `scikit-learn >= 1.7.2`
 - `simpful >= 2.12.0`
+- `shap >= 0.46.0`
 
 ---
 
@@ -163,6 +165,7 @@ cd src
 poetry run python tests/test_fed_frt_weather_izimir.py
 poetry run python tests/test_fed_fcmeans_horizontal_xclara.py
 poetry run python tests/test_fed_rbc_rmi_demo_fedxai_lib.py
+poetry run python tests/test_fed_shap_rmi.py
 ```
 
 Additional examples for all implemented algorithms can be found in the [src/tests/](src/tests/) directory.
@@ -285,6 +288,19 @@ If you use fedxai-lib in your research, please cite the relevant papers:
   author={Daole, M. and Ducange, P. and Marcelloni, F. and Renda, A.},
   booktitle={2024 IEEE International Conference on Fuzzy Systems (FUZZ-IEEE)},
   pages={1--9},
+  year={2024},
+  organization={IEEE}
+}
+```
+
+### <a name="5"></a>[5] Federated SHAP: Consistent Post-hoc Explainability
+
+```bibtex
+@inproceedings{ducange2024consistent,
+  title={Consistent post-hoc explainability in federated learning through federated fuzzy clustering},
+  author={Ducange, Pietro and Marcelloni, Francesco and Renda, Alessandro and Ruffini, Fabrizio},
+  booktitle={2024 IEEE International Conference on Fuzzy Systems (FUZZ-IEEE)},
+  pages={1--10},
   year={2024},
   organization={IEEE}
 }
