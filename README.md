@@ -228,7 +228,7 @@ By contributing to this project, you agree that your contributions will be licen
 - **Mattia Daole** - [Google Scholar](https://scholar.google.it/citations?user=yNletAoAAAAJ&hl=it&oi=ao) - [mattia.daole@phd.unipi.it](mailto:mattia.daole@phd.unipi.it)
 - **Pietro Ducange** - [Google Scholar](https://scholar.google.com/) - [pietro.ducange@unipi.it](mailto:pietro.ducange@unipi.it)
 - **Francesco Marcelloni** - [Google Scholar](https://scholar.google.com/) - [francesco.marcelloni@unipi.it](mailto:francesco.marcelloni@unipi.it)
-- **Giustino Miglionico** - [Google Scholar](https://scholar.google.it/citations?user=GSRVwE4AAAAJ&hl=it&oi=ao) - [giustino.miglionico@phd.unipi.it](mailto:giustino.miglionico@phd.unipi.it)
+- **Giustino Claudio Miglionico** - [Google Scholar](https://scholar.google.it/citations?user=GSRVwE4AAAAJ&hl=it&oi=ao) - [giustino.miglionico@phd.unipi.it](mailto:giustino.miglionico@phd.unipi.it)
 
 ---
 
