@@ -28,6 +28,8 @@ This document provides detailed hyperparameter specifications for each algorithm
 
 ## Federated Fuzzy C-Means (Horizontal)
 
+**Identifier**: federated_fcmeans_horizontal
+
 **Algorithm**: `FedXAIAlgorithm.FED_FCMEANS_HORIZONTAL`
 
 **Local execution example**: [test_fed_fcmeans_horizontal_xclara.py](src/tests/test_fed_fcmeans_horizontal_xclara.py)
@@ -62,7 +64,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -90,6 +92,8 @@ print(f"Discovered {len(final_centroids)} clusters")
 ---
 
 ## Federated C-Means (Horizontal)
+
+**Identifier**: federated_cmeans_horizontal
 
 **Algorithm**: `FedXAIAlgorithm.FED_CMEANS_HORIZONTAL`
 
@@ -123,7 +127,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -150,6 +154,8 @@ print(f"Discovered {len(final_centroids)} clusters")
 ---
 
 ## Federated Fuzzy C-Means (Vertical)
+
+**Identifier**: federated_fcmeans_vertical
 
 **Algorithm**: `FedXAIAlgorithm.FED_FCMEANS_VERTICAL`
 
@@ -185,7 +191,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -217,6 +223,8 @@ print(f"Discovered {len(final_centroids)} clusters across {num_clients} feature 
 ---
 
 ## Federated C-Means (Vertical)
+
+**Identifier**: federated_cmeans_vertical
 
 **Algorithm**: `FedXAIAlgorithm.FED_CMEANS_VERTICAL`
 
@@ -252,7 +260,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -285,6 +293,8 @@ print(f"Discovered {len(final_centroids)} clusters across {num_clients} feature 
 ---
 
 ## Federated Fuzzy Regression Tree (FRT)
+
+**Identifier**: federated_frt
 
 **Algorithm**: `FedXAIAlgorithm.FED_FRT_HORIZONTAL`
 
@@ -338,7 +348,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -395,6 +405,8 @@ frt_model.print_tree()
 
 ## Federated Rule-Based Classifier (FRBC)
 
+**Identifier**: federated_frbc
+
 **Algorithm**: `FedXAIAlgorithm.FED_FRBC_HORIZONTAL`
 
 **Local execution example**: [test_fed_rbc_rmi_demo_fedxai_lib.py](src/tests/test_fed_rbc_rmi_demo_fedxai_lib.py)
@@ -450,7 +462,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
@@ -495,6 +507,8 @@ for idx, rule in enumerate(frbc_model.rules):
 
 ## Federated SHAP
 
+**Identifier**: federated_shap
+
 **Algorithm**: `FedXAIAlgorithm.FED_SHAP`
 
 **Local execution example**: [test_fed_shap_rmi.py](src/tests/test_fed_shap_rmi.py)
@@ -533,7 +547,7 @@ parameters = {
 }
 ```
 
-### Usage Pattern
+### Code example
 
 ```python
 from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment

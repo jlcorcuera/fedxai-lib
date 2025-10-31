@@ -347,6 +347,8 @@ cat executions/federated_frt_weather_izimir.json
 
 **Configuration Details:**
 
+The `"algorithm"` field specifies the algorithm identifier. For a complete list of all available algorithm identifiers and their hyperparameters, see [Algorithm_Hyperparameters.md](Algorithm_Hyperparameters.md).
+
 ```json
 {
   "algorithm": "federated_frt",
