@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.pdf
 *.pkl
+*.txt
 .idea/
 # C extensions
 *.so
