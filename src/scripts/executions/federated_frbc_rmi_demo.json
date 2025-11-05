@@ -10,7 +10,7 @@
       "dataset_X_train" : "/dataset/X_train.csv",
       "output_model_folder": "/tmp",
       "model_output_file": "/models/frbc_RMI.pickle",
-      "desired_columns" : [
+      "features_names" : [
         "original_shape2D_Elongation",
         "original_shape2D_MajorAxisLength",
         "original_shape2D_MinorAxisLength",
@@ -25,6 +25,11 @@
         "original_firstorder_Uniformity",
         "Centroid_X",
         "Centroid_Y"
-         ]
+         ],
+      "unique_labels" : {
+         "1": "Meningioma",
+         "2": "Glioma",
+         "3": "Pituitary"
+         }
    }
 }

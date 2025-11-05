@@ -60,10 +60,12 @@ class FederatedFRBCClient(FedlangEntity):
         self.num_fuzzy_sets = self.parameters.get("num_fuzzy_sets")
         self.num_features = self.parameters.get("num_features")
         self.model_output_file = self.parameters.get("model_output_file")
-        self.desired_columns = self.parameters.get("desired_columns")
+        self.feature_names = self.parameters.get("feature_names")
+
+
         if self.X_train is None:
             df = pd.read_csv(self.parameters.get('dataset_X_train'))
-            self.X_train = df[self.desired_columns].to_numpy()
+            self.X_train = df[self.feature_names].to_numpy()
             self.y_train = df['Classe'].to_numpy()
 
         FS_structures, FS_parameters_numba, partitions = self._build_fuzzy_structures(

@@ -125,7 +125,9 @@ class FRBC_no_opt():
         elif self.num_fuzzy_sets == 3:
             self.partitions = np.tile(np.array([0.0, 0.0, 0.5, 1.0, 1.0]), (self.num_features, 1))
             
-        
+        if "feature_names" in dict_parameters.keys():
+            self.feature_names = dict_parameters["feature_names"]
+
     @staticmethod
     def find_fuzzy_set(value: float, num_fs:int): #-> [int,float, int,float]:
         """
@@ -201,7 +203,7 @@ class FRBC_no_opt():
 
 
         
-    def __get_rule_maximum_weight(self, weight_factor) -> Tuple[np.ndarray, int]:
+    def __get_rule_maximum_weight(self) -> Tuple[np.ndarray, int]:
         """
         Utility function used to retrieve the rule with the maximum weight
         :return: a tuple with:
@@ -209,10 +211,9 @@ class FRBC_no_opt():
                     - consequent
                     - index
         """
-        if weight_factor == "CF":
-            index_rule_weight = np.asarray(self.certaintyFactors).argmax()
-        elif weight_factor == "PCF":
-            index_rule_weight = self.penalizedCF.argmax()
+        
+        index_rule_weight = np.asarray(self.certaintyFactors).argmax()
+        
         # print("-------------s")
         # print(self._antecedents[index_rule_weight,:])
         # print(self._consequents[index_rule_weight])
@@ -228,15 +229,13 @@ class FRBC_no_opt():
 
         is_all_zero = np.all((firing_strengths == 0))
         if is_all_zero:
-            _, _, index_max_rules = self.__get_rule_maximum_weight(weight_factor="CF")
+            _, _, index_max_rules = self.__get_rule_maximum_weight()
         else:
             max_values_firing = firing_strengths.max()
             index_same_firing_strengths = np.where(firing_strengths == max_values_firing)[0]
             
-            if weight_factor == "CF":
-                rule_weight = self.certaintyFactors[index_same_firing_strengths]
-            elif weight_factor == "PCF":
-                rule_weight = self.penalized_CFs[index_same_firing_strengths]
+            rule_weight = self.certaintyFactors[index_same_firing_strengths]
+            
             index_max_rules = index_same_firing_strengths[rule_weight.argmax()]
             
 
@@ -285,6 +284,23 @@ class FRBC_no_opt():
 
         return np.concatenate([antec, conseq])
     
+    def get_rule_by_index(self, index_rule):
+        antecedent = self._antecedents[index_rule]
+        consequent = self._consequents[index_rule]
+        rule_weight = self.weights[index_rule]
+        
+        if self.feature_names is None:
+            raise ValueError("Feature Names missing in parameters")
+
+        result = 'IF '
+        for elem, variable_name in zip(antecedent[: len(antecedent) - 1],
+                                       self.feature_names[: len(self.feature_names) - 1]):
+            result += '(' + variable_name + ' IS ' + self.FS_mapping[int(elem)].get_term() + ') AND '
+
+        result += '(' + self.feature_names[-1] + ' IS ' +self.FS_mapping[int(antecedent[-1])].get_term() + ')'
+        result += f'\n\t\tTHEN: {str(self.unique_labels[str(int(consequent))])}\n\t\t(Rule Weight: {rule_weight:.2e})\n\n'
+        return result
+
 
 
     # #### NUMBA PARALLELIZATION
@@ -322,7 +338,7 @@ class FRBC_no_opt():
 
     
     
-    def compute_firing_strengths_parallelized(self, antecedents, input_vector: np.ndarray, t_norm: str = 'product') -> np.ndarray:
+    def _compute_firing_strengths_parallelized(self, antecedents, input_vector: np.ndarray, t_norm: str = 'product') -> np.ndarray:
         """
         Calcola le firing strengths di ogni regola dato un input.
 
@@ -367,26 +383,24 @@ class FRBC_no_opt():
         
         return firing_strengths
 
-    def __internal_predict_parallelized(self, input_vector: np.ndarray, weight_factor:str):# -> Tuple[str, int]:
+    def __internal_predict_parallelized(self, input_vector: np.ndarray):# -> Tuple[str, int]:
     
         rule_weight = 0
-        firing_strengths = self.compute_firing_strengths_parallelized(antecedents=self._antecedents, input_vector=input_vector)
+        firing_strengths = self._compute_firing_strengths_parallelized(antecedents=self._antecedents, input_vector=input_vector)
 
         is_all_zero = np.all((firing_strengths == 0))
         if is_all_zero:
-            _, _, index_max_rules = self.__get_rule_maximum_weight(weight_factor="CF")
+            _, _, index_max_rules = self.__get_rule_maximum_weight()
         else:
             max_values_firing = firing_strengths.max()
             index_same_firing_strengths = np.where(firing_strengths == max_values_firing)[0]
-            if weight_factor == "CF":
-                rule_weight = self.certaintyFactors[index_same_firing_strengths]
-            elif weight_factor == "PCF": ## NOT IMPLEMENTED 
-                rule_weight = self.penalized_CFs[index_same_firing_strengths]
+            
+            rule_weight = self.certaintyFactors[index_same_firing_strengths]
             index_max_rules = index_same_firing_strengths[rule_weight.argmax()]
             
         return self._consequents[index_max_rules], index_max_rules
     
-    def predict_and_get_rule_parallelized(self, X: np.ndarray, weight_factor: str):
+    def predict(self, X: np.ndarray):
         """
         Parameters
         ----------
@@ -398,7 +412,7 @@ class FRBC_no_opt():
         y : array of shape = [2] or [n_samples, 2]
             the predicted values and activated rule.
         """
-        return list(map(lambda input_vector: self.__internal_predict_parallelized(input_vector, weight_factor=weight_factor), X))
+        return list(map(lambda input_vector: self.__internal_predict_parallelized(input_vector), X))
 
 
     
