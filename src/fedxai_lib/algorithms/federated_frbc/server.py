@@ -18,6 +18,8 @@ class FederatedFRBCServer(FedlangEntity):
         self.num_fuzzy_sets = self.parameters.get("num_fuzzy_sets")
         self.feature_number = self.parameters.get("num_features")
         self.model_output_file = self.parameters.get("model_output_file")
+        self.feature_names = self.parameters.get("feature_names")
+        self.unique_labels = self.parameters.get("unique_labels")
 
         
     
@@ -135,7 +137,8 @@ class FederatedFRBCServer(FedlangEntity):
         dict_info ={
             'num_fs': self.num_fuzzy_sets, 
             'num_features': self.feature_number,
-            'unique_labels': [0,1]
+            'unique_labels': self.unique_labels,
+            'feature_names': self.feature_names
         }
         frbc = FRBC_no_opt(dict_info)
         frbc._antecedents = self.global_RB['antecedents']

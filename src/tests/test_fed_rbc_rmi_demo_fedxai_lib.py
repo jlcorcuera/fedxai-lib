@@ -48,7 +48,14 @@ parameters = {
     "target": "class",
     "output_model_folder": "/tmp",
     "model_output_file": "../models/frbc_RMI.pickle",
-    "desired_columns": desired_columns}
+    "desired_columns": desired_columns,
+    "unique_labels" : {
+    "1": "Meningioma",
+    "2": "Glioma",
+    "3": "Pituitary"
+    },
+    "feature_names": desired_columns
+}
 
 num_clients = 3
 num_features = 14
@@ -85,15 +92,22 @@ X_test = pd.read_csv(X_test_path)
 y_test = X_test["Classe"]
 X_test = X_test[desired_columns]
 
-y_pred_train = frbc_model.predict_and_get_rule_parallelized(X_test.values, "CF")
+X_test = X_test
+y_test = y_test
+
+y_pred_train = frbc_model.predict(X_test.values)
 y_pred = np.array(y_pred_train, dtype=object)[:,0]
 y_pred_clean = pd.Series(y_pred).astype(int).to_numpy()
 
 
+    
+
 print(classification_report(y_test.values, y_pred_clean, output_dict=True))
 
+# for pred, idx in y_pred_train:
+#     print(frbc_model.get_rule_by_index(idx))
 
-# with open("./save_rules.txt", "w") as f:
-#     for predicted_class, rule_idx in y_pred_train:
-#         rule = frbc_model.get_rule(rule_idx)
-#         f.write(f"y: {predicted_class}, rule: {rule}\n")
+
+with open("./frbc_rmi_demo_test_rules_dump.txt", "w") as f:
+    for predicted_class, rule_idx in y_pred_train:
+        f.write(f"{frbc_model.get_rule_by_index(rule_idx)}")
