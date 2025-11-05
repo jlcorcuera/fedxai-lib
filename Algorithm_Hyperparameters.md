@@ -351,40 +351,88 @@ parameters = {
 ### Code example
 
 ```python
-from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
-from fedxai_lib.algorithms.federated_frt.server import FedFRTServer
-from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
-from sklearn.preprocessing import StandardScaler
+import os
 import pickle
+import pandas as pd
+from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm
+from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
+from fedxai_lib.algorithms.federated_frt.server import FedFRTServer
+from fedxai_lib.algorithms.federated_frt.utils.robust_scaler import RobustScaler
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import MinMaxScaler
 
-# Prepare data partitions for each client
-# Each client has their own X_train, y_train, X_test, y_test
-dataset_by_client = {...}  # Dictionary mapping client_id to data splits
+# Load dataset
+dataset_name = 'WeatherIzimir.csv'
+ds_path = os.path.join('..', 'datasets', dataset_name)
+df = pd.read_csv(ds_path)
 
-# Create scalers (shared across all clients for consistency)
-scaler_X = StandardScaler()
-scaler_y = StandardScaler()
+features = df.columns[:-1].values.tolist()
+target = df.columns.values[-1]
 
-# Fit scalers on combined training data
-scaler_X.fit(X_train_combined)
-scaler_y.fit(y_train_combined.reshape(-1, 1))
+# Create scalers for normalization
+LOW_PERCENTILE = 0.025
+HIGH_PERCENTILE = 0.975
+scaler_x = RobustScaler(features, LOW_PERCENTILE, HIGH_PERCENTILE)
+scaler_y = MinMaxScaler()
 
-# Create clients with their local data
-clients = [
-    FedFRTClient(
-        type='client',
-        id=idx,
-        scaler_X=scaler_X,
-        scaler_y=scaler_y,
-        X_train=dataset_by_client[idx]['X_train'],
-        y_train=dataset_by_client[idx]['y_train'],
-        X_test=dataset_by_client[idx]['X_test'],
-        y_test=dataset_by_client[idx]['y_test']
-    )
-    for idx in range(num_clients)
-]
+# Normalize data
+df_scaled = scaler_x.fit_transform(df)
+df_scaled[target] = scaler_y.fit_transform(df_scaled[target].values.reshape(-1, 1)).ravel()
 
-# Create server
+y = df_scaled[target].values.reshape(-1, 1).ravel()
+X = df_scaled.drop(columns=[target]).to_numpy()
+
+# Split data across clients using KFold
+num_clients = 5
+random_state = 19
+dataset_by_client = {client_id: {
+    'X_train': dict(), 'y_train': dict(),
+    'X_test': dict(), 'y_test': dict()
+} for client_id in range(num_clients)}
+
+kf = KFold(n_splits=num_clients, random_state=random_state, shuffle=True)
+for fold_id, (train_index, test_index) in enumerate(kf.split(X)):
+    X_train, y_train = X[train_index], y[train_index]
+    X_test, y_test = X[test_index], y[test_index]
+
+    kf_client = KFold(n_splits=num_clients, random_state=random_state, shuffle=True)
+    for indexes, client_id in zip(kf_client.split(X_train), range(num_clients)):
+        _, train_index_it = indexes
+        dataset_by_client[client_id]['X_train'] = pd.DataFrame(X_train[train_index_it], columns=features)
+        dataset_by_client[client_id]['y_train'] = pd.DataFrame(y_train[train_index_it], columns=[target])
+
+    kf_client = KFold(n_splits=num_clients, random_state=random_state, shuffle=True)
+    for indexes, client_id in zip(kf_client.split(X_test), range(num_clients)):
+        _, test_index_it = indexes
+        dataset_by_client[client_id]['X_test'] = pd.DataFrame(X_test[test_index_it], columns=features)
+        dataset_by_client[client_id]['y_test'] = pd.DataFrame(y_test[test_index_it], columns=[target])
+    break
+
+# Define parameters
+parameters = {
+    "gain_threshold": 0.0001,
+    "max_number_rounds": 100,
+    "num_fuzzy_sets": 5,
+    "max_depth": None,
+    "min_samples_split_ratio": 0.1,
+    "min_num_clients": 20,
+    "obfuscate": True,
+    "features_names": features,
+    "target": target,
+    "dataset_X_train": "/dataset/X_train.csv",
+    "dataset_y_train": "/dataset/y_train.csv",
+    "dataset_X_test": "/dataset/X_test.csv",
+    "dataset_y_test": "/dataset/y_test.csv",
+    "model_output_file": "/models/frt_weather_izimir.pickle"
+}
+
+# Create clients and server
+clients = [FedFRTClient(type='client', id=idx, scaler_X=scaler_x, scaler_y=scaler_y,
+                        X_train=dataset_by_client[idx]['X_train'],
+                        y_train=dataset_by_client[idx]['y_train'],
+                        X_test=dataset_by_client[idx]['X_test'],
+                        y_test=dataset_by_client[idx]['y_test'])
+           for idx in range(num_clients)]
 server = FedFRTServer(type='server')
 
 # Run federated tree growing
@@ -392,13 +440,19 @@ run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, param
 
 # Load and use the trained model
 with open(parameters['model_output_file'], 'rb') as f:
-    frt_model = pickle.load(f)
+    model = pickle.load(f)
 
-# Make predictions
-predictions = frt_model.predict(X_new)
+# Make predictions and access activated rules
+X_test_client = dataset_by_client[0]['X_test']
+y_test_client = scaler_y.inverse_transform(dataset_by_client[0]['y_test'].values.reshape(-1, 1)).ravel()
 
-# Print tree structure for interpretation
-frt_model.print_tree()
+y_predict_with_rules = model.predict(X_test_client.values)
+y_predict = scaler_y.inverse_transform(y_predict_with_rules[:, 0].reshape(-1, 1)).ravel()
+activated_rules = y_predict_with_rules[:, 1].astype(int)
+
+# Print predictions with activated rules
+for y_true, y_pred, rule_idx in zip(y_test_client, y_predict, activated_rules):
+    print(f"True: {y_true}, Predicted: {y_pred}, Rule: {model.get_rule_by_index(rule_idx)}")
 ```
 
 ---
@@ -465,42 +519,99 @@ parameters = {
 ### Code example
 
 ```python
-from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
-from fedxai_lib.algorithms.federated_frbc.server import FedFRBCServer
-from fedxai_lib.algorithms.federated_frbc.client import FedFRBCClient
-import pandas as pd
 import pickle
+import numpy as np
+import pandas as pd
+from sklearn.metrics import classification_report
+from fedxai_lib import FedXAIAlgorithm, run_fedxai_experiment
+from fedxai_lib.algorithms.federated_frbc.client import FederatedFRBCClient
+from fedxai_lib.algorithms.federated_frbc.server import FederatedFRBCServer
 
-# Prepare data partitions for each client
-# Each client has their training data with features + target class
-client_data_paths = [...]  # List of paths to client CSV files
-
-# Create clients with their local data
-clients = [
-    FedFRBCClient(
-        type='client',
-        id=idx,
-        dataset=pd.read_csv(path)
-    )
-    for idx, path in enumerate(client_data_paths)
+# Define feature columns to use
+desired_columns = [
+    "original_shape2D_Elongation",
+    "original_shape2D_MajorAxisLength",
+    "original_shape2D_MinorAxisLength",
+    "original_shape2D_Perimeter",
+    "original_shape2D_MaximumDiameter",
+    "original_shape2D_Sphericity",
+    "original_firstorder_Mean",
+    "original_firstorder_Median",
+    "original_firstorder_Minimum",
+    "original_firstorder_Maximum",
+    "original_firstorder_Range",
+    "original_firstorder_Uniformity",
+    "Centroid_X",
+    "Centroid_Y"
 ]
 
+# Define parameters
+parameters = {
+    "max_number_rounds": 1,
+    "num_fuzzy_sets": 5,
+    "min_num_clients": 3,
+    "num_features": 14,
+    "obfuscate": True,
+    "target": "class",
+    "output_model_folder": "/tmp",
+    "model_output_file": "../models/frbc_RMI.pickle",
+    "desired_columns": desired_columns,
+    "unique_labels": {
+        "1": "Meningioma",
+        "2": "Glioma",
+        "3": "Pituitary"
+    },
+    "feature_names": desired_columns
+}
+
+# Load and prepare client data
+num_clients = 3
+path_train = "../datasets/RMI_demo/preprocessed/split_train_{id}.csv"
+
+clients = []
+for client_id in range(num_clients):
+    # Read training data for each client
+    df = pd.read_csv(path_train.format(id=client_id))
+    X_train = df[desired_columns].to_numpy()
+    y_train = df['Classe'].to_numpy()
+
+    # Create client entity
+    clients.append(FederatedFRBCClient(type='client', id=client_id,
+                                       X_train=X_train, y_train=y_train))
+
 # Create server
-server = FedFRBCServer(type='server')
+server = FederatedFRBCServer(type='server')
 
 # Run federated rule extraction
 run_fedxai_experiment(FedXAIAlgorithm.FED_FRBC_HORIZONTAL, server, clients, parameters)
 
+print("Experiment completed successfully.")
+
 # Load and use the trained model
-with open(parameters['model_output_file'], 'rb') as f:
+with open("../models/frbc_RMI.pickle", 'rb') as f:
     frbc_model = pickle.load(f)
 
-# Make predictions
-predictions = frbc_model.predict(X_new)
+# Test the model
+X_test_path = "../datasets/RMI_demo/preprocessed/test.csv"
+X_test_df = pd.read_csv(X_test_path)
 
-# Print rules for interpretation
-for idx, rule in enumerate(frbc_model.rules):
-    print(f"Rule {idx+1}: {rule}")
+y_test = X_test_df["Classe"]
+X_test = X_test_df[desired_columns]
+
+# Make predictions with activated rules
+y_pred_train = frbc_model.predict(X_test.values)
+y_pred = np.array(y_pred_train, dtype=object)[:, 0]
+y_pred_clean = pd.Series(y_pred).astype(int).to_numpy()
+
+# Evaluate model
+print(classification_report(y_test.values, y_pred_clean, output_dict=True))
+
+# Print activated rules for each prediction
+with open("./frbc_rmi_demo_test_rules_dump.txt", "w") as f:
+    for predicted_class, rule_idx in y_pred_train:
+        rule_text = frbc_model.get_rule_by_index(rule_idx)
+        f.write(f"{rule_text}\n")
+        print(f"Predicted class: {predicted_class}, Rule: {rule_text}")
 ```
 
 ---
