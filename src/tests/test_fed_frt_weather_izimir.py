@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import pickle
 import pandas as pd
 from fedxai_lib import run_fedxai_experiment, FedXAIAlgorithm
 from fedxai_lib.algorithms.federated_frt.client import FedFRTClient
@@ -37,7 +38,7 @@ scaler_y = MinMaxScaler()
 df_scaled = scaler_x.fit_transform(df)
 df_scaled[target] = scaler_y.fit_transform(df_scaled[target].values.reshape(-1, 1)).ravel()
 
-y = scaler_y.fit_transform(df_scaled[target].values.reshape(-1, 1)).ravel()
+y = df_scaled[target].values.reshape(-1, 1).ravel()
 X = df_scaled.drop(columns=[target]).to_numpy()
 
 dataset_by_client = {client_id: {
@@ -108,3 +109,17 @@ clients = [FedFRTClient(type='client', id = idx, scaler_X=scaler_x, scaler_y=sca
 server = FedFRTServer(type='server')
 
 run_fedxai_experiment(FedXAIAlgorithm.FED_FRT_HORIZONTAL, server, clients, parameters)
+
+with open(parameters['model_output_file'], 'rb') as f:
+    model = pickle.load(f)
+
+
+X_test_client = dataset_by_client[0]['X_test']
+y_test_client = scaler_y.inverse_transform(dataset_by_client[0]['y_test'].values.reshape(-1, 1)).ravel()
+
+y_predict_client_with_rules = model.predict(X_test_client.values)
+y_predict_client = scaler_y.inverse_transform(y_predict_client_with_rules[:, 0].reshape(-1, 1)).ravel()
+activated_rules = y_predict_client_with_rules[:, 1].astype(int)
+
+for y_true, y_predict, activated_rule in zip(y_test_client, y_predict_client, activated_rules):
+    print(f"True: {y_true}, Predicted: {y_predict}, Activated Rule: {model.get_rule_by_index(activated_rule)}")

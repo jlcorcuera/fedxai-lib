@@ -90,7 +90,6 @@ class FedFRTModel:
 
         firing_strengths = compute_firing_strengths(x, self._antecedents, self._cache_activation_force)
         is_all_zero = np.all((firing_strengths == 0))
-        num_activated_rules = 0
 
         if is_all_zero:
             _, consequent_weights, index_max_rules = self._get_rule_maximum_weight()
@@ -99,7 +98,6 @@ class FedFRTModel:
 
             index_same_firing_strengths = np.where(firing_strengths == max_values_firing)[0]
 
-            num_activated_rules = len(index_same_firing_strengths)
 
             # Retrieve the relative weights
             rule_weight = self._rule_weights[index_same_firing_strengths]
@@ -114,7 +112,7 @@ class FedFRTModel:
 
         result = (consequent_weights * x).sum() + w0
 
-        return result, index_max_rules, num_activated_rules
+        return result, index_max_rules
 
     def predict(self, X):
         """Predict class or regression value for X.
@@ -145,6 +143,17 @@ class FedFRTModel:
                          f'\t\t(Rule Weight: {weight:.2e})\n\n'
 
         return rules_str
+
+    def get_rule_by_index(self, index: int):
+        antecedents = self._antecedents[index]
+        consequents = self._consequents[index]
+        weight = self._rule_weights[index]
+        num_samples = self.samples_by_rule[index]
+        return f"{self._get_antecedent_as_string(antecedents)}\n" + \
+                        '\t\tTHEN: ' + self._get_consequent_as_string(consequents) + '\n' + \
+                        f'\t\t(Num Samples: {num_samples})\n' + \
+                        f'\t\t(Rule Weight: {weight:.2e})\n\n'
+
 
     def _get_antecedent_as_string(self, antecedents: List) -> str:
         variables_name = self.features_names
