@@ -314,8 +314,7 @@ This work has been developed by the **Artificial Intelligence R&D Group** at the
 
 fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models. This work has been funded by:
 
-- The **PNRR project - M4C2 - Investimento 1.3**, Partenariato Esteso PE00000013 - **FAIR - Future Artificial Intelligence Research** - Spoke 1 "Human-centered AI"
-- The **Italian Ministry of University and Research (MUR)** in the framework of the **FoReLab** and **CrossLab** projects (Departments of Excellence)
+- **Bando FAIR Trasferimento Tecnologico**: "Sviluppo di una libreria modulare per l'apprendimento di modelli di Explainable Artificial Intelligence in ambienti di Federated Learning" (Development of a modular library for learning Explainable Artificial Intelligence models in Federated Learning environments)
 
 ---
 
