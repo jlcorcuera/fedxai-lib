@@ -316,6 +316,8 @@ fedxai-lib has supported research, development, and demonstration activities con
 
 - **Bando FAIR Trasferimento Tecnologico**: "Sviluppo di una libreria modulare per l'apprendimento di modelli di Explainable Artificial Intelligence in ambienti di Federated Learning" (Development of a modular library for learning Explainable Artificial Intelligence models in Federated Learning environments)
 
+We would like to acknowledge the invaluable support of **Professors Nicola Tonellotto, Tiberio Uricchio, and Alberto Landi**, members of the Fed-XAI Library project working group.
+
 ---
 
 For questions, issues, or contributions, please visit the [GitHub repository](https://github.com/jlcorcuera/fedxai-lib) or contact the contributors directly.
