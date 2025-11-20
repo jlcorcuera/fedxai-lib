@@ -2,7 +2,7 @@
 # Builder stage: compile and package the Erlang application
 # To build the image: docker build --progress=plain -f Dockerfile.fedxai_lib -t jcorcuera/fedxai_lib:0.0.4 .
 # ---
-FROM jcorcuera/fedlang:1.0.0
+FROM jcorcuera/fedlang:latest
 
 LABEL maintainer="AI&RD Research Group, Department of Information Engineering, University of Pisa"
 
