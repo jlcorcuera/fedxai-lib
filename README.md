@@ -95,12 +95,7 @@ The library depends on the following key packages (automatically installed via P
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/jlcorcuera/fedxai-lib.git
-cd fedxai-lib
-
-# Install dependencies
-poetry install
+pip install fedxai-lib
 ```
 
 ---
