@@ -12,6 +12,6 @@ WORKDIR /plans
 COPY src/fedxai_lib/descriptors/definitions .
 
 WORKDIR /app
-RUN pip install fedxai-lib --extra-index-url https://test.pypi.org/simple/
+RUN pip install fedxai-lib
 
 CMD ["bin/fedlang", "foreground"]

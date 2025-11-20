@@ -27,20 +27,15 @@ files = [
 
 [[package]]
 name = "fedlang-py"
-version = "0.0.7"
+version = "0.0.1"
 description = "A Federated Learning Framework for Erlang-Python Integration"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "fedlang_py-0.0.7-py3-none-any.whl", hash = "sha256:bed78e69dbda7ab67369fe91922d1f91c60bf7b96894cd60b86cee35282a80ae"},
-    {file = "fedlang_py-0.0.7.tar.gz", hash = "sha256:8ab73432c03ce5ae3e7779c207f43d302f289055a7b98891c8aafe1e2e0cd36d"},
+    {file = "fedlang_py-0.0.1-py3-none-any.whl", hash = "sha256:9ee6bcff22660fc1d0c8d8e68bc512392f70d541b1bcd7a2d7b242b5d27255cb"},
+    {file = "fedlang_py-0.0.1.tar.gz", hash = "sha256:9f7e05295dd9ebdc9cf22abe9ebfa0d60cab863fb6e379f9b550707c7e7cc10d"},
 ]
-
-[package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "testpypi"
 
 [[package]]
 name = "joblib"
@@ -623,4 +618,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "d08ee66606a24b7a741239b1383e66cb57c033700034167b758e60340429629e"
+content-hash = "d8c87f24eb246ace48e808c342880756d48695019657d9387717bc6654671412"

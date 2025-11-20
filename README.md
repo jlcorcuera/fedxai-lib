@@ -4,7 +4,7 @@
 
 **fedxai-lib** is a Python library for Federated Learning (FL) of eXplainable Artificial Intelligence (XAI) models. The library provides privacy-preserving implementations of interpretable machine learning algorithms, enabling distributed training while maintaining data privacy and model transparency.
 
-The current version of the framework includes the implementation of federated clustering algorithms (Fuzzy C-Means and C-Means for both horizontal and vertical data partitioning) [[3]](#3), a federated Fuzzy Regression Tree (FRT) algorithm for interpretable regression tasks [[2]](#2), a federated Rule-Based Classifier (FRBC) for explainable classification [[4]](#4), and a federated SHAP implementation for consistent post-hoc explainability [[5]](#5). These algorithms are designed to operate in distributed environments where data cannot be centralized due to privacy, regulatory, or operational constraints. 
+The current version of the framework includes the implementation of federated clustering algorithms (Fuzzy C-Means and C-Means for both horizontal and vertical data partitioning) [[3]](#3), a federated Fuzzy Regression Tree (FRT) algorithm for interpretable regression tasks [[2]](#2), a federated Rule-Based Classifier (FRBC) for explainable classification [[4]](#4), and a federated SHAP implementation for consistent post-hoc explainability [[5]](#5). These algorithms are designed to operate in distributed environments where data cannot be centralized due to privacy, regulatory, or operational constraints.
 
 This work has been developed by the [Artificial Intelligence R&D Group](https://ai.dii.unipi.it/) at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models.
 
@@ -82,7 +82,7 @@ Before using fedxai-lib, ensure the following dependencies are installed:
 
 The library depends on the following key packages (automatically installed via Poetry):
 
-- `fedlang-py >= 0.0.7`
+- `fedlang-py == 0.0.1`
 - `pandas >= 2.3.3`
 - `numpy >= 2.3.4`
 - `numba >= 0.62.1`
@@ -209,6 +209,7 @@ Detailed documentation of all hyperparameters for each implemented algorithm is 
 **[Algorithm_Hyperparameters.md](Algorithm_Hyperparameters.md)**
 
 This reference provides:
+
 - Complete hyperparameter descriptions for all algorithms
 - Parameter types, default values, and valid ranges
 - Usage examples and best practices
