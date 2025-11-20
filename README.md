@@ -9,9 +9,9 @@ The current version of the framework includes the implementation of federated cl
 This work has been developed by the [Artificial Intelligence R&D Group](https://ai.dii.unipi.it/) at the Department of Information Engineering, University of Pisa. fedxai-lib has supported research, development, and demonstration activities concerning the FL of XAI models.
 
 <p align="center">
-	<img src="./images/logo-DII.png" alt="Department of Information Engineering" style="height: 80px">
+	<img src="https://i0.wp.com/ai.dii.unipi.it/wp-content/uploads/2021/07/logo-DII.png" alt="Department of Information Engineering" style="height: 80px">
 	&emsp;&emsp;
-	<img src="./images/logo_fair.png" alt="FAIR Project" style="height: 80px">
+	<img src="https://i0.wp.com/ai.dii.unipi.it/wp-content/uploads/2023/07/Senza-titolo.png" alt="FAIR Project" style="height: 80px">
 </p>
 
 ---
