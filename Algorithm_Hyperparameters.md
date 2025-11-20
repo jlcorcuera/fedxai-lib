@@ -479,7 +479,7 @@ Federated Rule-Based Classifier builds interpretable classification models using
 | `min_num_clients` | int | 3 | Minimum number of clients required to participate in the federation. | 3 |
 | `obfuscate` | bool | True | Enable privacy obfuscation mechanisms to protect individual client data contributions. | True |
 | `target` | str | required | Name of the target class variable to predict. | "class" |
-| `desired_columns` | list[str] | required | List of feature column names to use from the dataset. Specifies which features participate in rule construction. | ["feature1", "feature2", ...] |
+| `feature_names` | list[str] | required | List of feature column names to use from the dataset. Specifies which features participate in rule construction. | ["feature1", "feature2", ...] |
 | `dataset_X_train` | str | required | Path to training dataset CSV file (client-side path in Docker). Should contain both features and target class. | "/dataset/X_train.csv" |
 | `output_model_folder` | str | "/tmp" | Directory path for temporary model outputs during training. | "/tmp" |
 | `model_output_file` | str | required | Path where the trained FRBC model will be saved (server-side path). | "/models/frbc_model.pickle" |
@@ -497,7 +497,7 @@ parameters = {
     "dataset_X_train": "/dataset/X_train.csv",
     "output_model_folder": "/tmp",
     "model_output_file": "/models/frbc_RMI.pickle",
-    "desired_columns": [
+    "feature_names": [
         "original_shape2D_Elongation",
         "original_shape2D_MajorAxisLength",
         "original_shape2D_MinorAxisLength",
@@ -528,7 +528,7 @@ from fedxai_lib.algorithms.federated_frbc.client import FederatedFRBCClient
 from fedxai_lib.algorithms.federated_frbc.server import FederatedFRBCServer
 
 # Define feature columns to use
-desired_columns = [
+feature_names = [
     "original_shape2D_Elongation",
     "original_shape2D_MajorAxisLength",
     "original_shape2D_MinorAxisLength",
@@ -555,13 +555,12 @@ parameters = {
     "target": "class",
     "output_model_folder": "/tmp",
     "model_output_file": "../models/frbc_RMI.pickle",
-    "desired_columns": desired_columns,
     "unique_labels": {
         "1": "Meningioma",
         "2": "Glioma",
         "3": "Pituitary"
     },
-    "feature_names": desired_columns
+    "feature_names": feature_names
 }
 
 # Load and prepare client data
@@ -572,7 +571,7 @@ clients = []
 for client_id in range(num_clients):
     # Read training data for each client
     df = pd.read_csv(path_train.format(id=client_id))
-    X_train = df[desired_columns].to_numpy()
+    X_train = df[feature_names].to_numpy()
     y_train = df['Classe'].to_numpy()
 
     # Create client entity
@@ -596,7 +595,7 @@ X_test_path = "../datasets/RMI_demo/preprocessed/test.csv"
 X_test_df = pd.read_csv(X_test_path)
 
 y_test = X_test_df["Classe"]
-X_test = X_test_df[desired_columns]
+X_test = X_test_df[feature_names]
 
 # Make predictions with activated rules
 y_pred_train = frbc_model.predict(X_test.values)

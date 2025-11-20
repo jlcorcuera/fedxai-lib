@@ -48,7 +48,6 @@ parameters = {
     "target": "class",
     "output_model_folder": "/tmp",
     "model_output_file": "../models/frbc_RMI.pickle",
-    "desired_columns": desired_columns,
     "unique_labels" : {
     "1": "Meningioma",
     "2": "Glioma",
