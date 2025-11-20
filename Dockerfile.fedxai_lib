@@ -12,7 +12,7 @@ WORKDIR /plans
 COPY src/fedxai_lib/descriptors/definitions .
 
 WORKDIR /app
-RUN apt update && RUN apt -y install build-essential python3-dev
+RUN apt update && apt -y install build-essential python3-dev
 RUN pip install --break-system-packages fedxai-lib
 
 CMD ["bin/fedlang", "foreground"]
